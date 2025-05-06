@@ -7,39 +7,53 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { ViewStyle } from 'react-native';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
     <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+      screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
+        tabBarShowLabel: true,
+        tabBarActiveTintColor: '#000',
+        tabBarInactiveTintColor: '#888',
+        tabBarStyle: {
+          backgroundColor: '#fdf6ec',
+          borderTopWidth: 0,
+          borderTopColor: '#ccc',
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.15,
+          shadowRadius: 4,
+          elevation: 10,
+          height: 60,
+          paddingBottom: 6,
+        }as ViewStyle,
+        tabBarIcon: ({ color, size }) => {
+          switch (route.name) {
+            case 'index':
+              return <Icon name="home-outline" size={size} color={color} />;
+            case 'stores':
+              return <Icon name="storefront-outline" size={size} color={color} />;
+            case 'cart':
+              return <Icon name="cart-outline" size={size} color={color} />;
+            case 'favorites':
+              return <Icon name="heart-outline" size={size} color={color} />;
+            case 'settings':
+              return <Icon name="settings-outline" size={size} color={color} />;
+            default:
+              return null;
+          }
+        },
+      })}
+    >
+      <Tabs.Screen name="index" options={{ title: 'Inicio' }} />
+      <Tabs.Screen name="stores" options={{ title: 'Tiendas' }} />
+      <Tabs.Screen name="cart" options={{ title: 'Carrito' }} />
+      <Tabs.Screen name="favorites" options={{ title: 'Favoritos' }} />
+      <Tabs.Screen name="settings" options={{ title: 'Ajustes' }} />
     </Tabs>
   );
 }
