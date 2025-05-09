@@ -32,11 +32,11 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
-        <Stack.Screen name="AllOffers" options={{ title: 'Todas las ofertas' }}/>
-        <Stack.Screen name="Categores" options={{ title: 'Todas las categorias' }}/>
-        <Stack.Screen name="CategoryProducts" options={{ title: 'Todas las categorias' }}/>
+        <Stack.Screen name="screen/AllOffers" options={{ headerShown: false }}/>
+        <Stack.Screen name="screen/Categories" options={{ headerShown: false }}/>
+        <Stack.Screen name="screen/CategoryProducts" options={{ headerShown: false }}/>
       </Stack>
-      {/* <StatusBar style="auto"/> */}
+      <StatusBar style="auto"/>
     </ThemeProvider>
   );
 }

@@ -36,10 +36,10 @@ const CategoriesPreview = () => {
   }
 
   return (
-    <View style={{ marginVertical: 16, width: '100%' }}>
+    <View>
       <View style={styles.header}>
         <Text style={styles.title}>Categorías</Text>
-        <TouchableOpacity onPress={() => router.push('./screen/Categories')}>
+        <TouchableOpacity onPress={() => router.push('../screen/Categories')}>
           <Text style={styles.link}>Ver todo</Text>
         </TouchableOpacity>
       </View>

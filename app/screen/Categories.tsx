@@ -1,4 +1,4 @@
-import { View, Text, ImageBackground, Pressable, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, ImageBackground, Pressable, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Stack, useRouter } from 'expo-router';
 
@@ -27,7 +27,7 @@ export default function Categories (){
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="orange" />
-        <Text style={styles.loadingText}>Cargando productos...</Text>
+        <Text style={styles.loadingText}>Cargando categorías...</Text>
       </View>
     );
   }
@@ -38,8 +38,6 @@ export default function Categories (){
   };
 
   return (
-    <>
-      <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.container}>
         <TouchableOpacity onPress={() => router.push('/(tabs)')}>
           <Text style={styles.link}>← Volver</Text>
@@ -65,7 +63,6 @@ export default function Categories (){
           )}
         />
       </View>
-    </>
   );
 };
 
@@ -74,7 +71,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingHorizontal: 16,
-    paddingTop: 32,
+    paddingTop: 60,
   },
   card: {
     flex: 1,
@@ -98,11 +95,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textTransform: 'capitalize',
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   list: {
     paddingBottom: 24,
   },
@@ -115,5 +107,12 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontSize: 16,
     color: '#555',
+    fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
   },
 });

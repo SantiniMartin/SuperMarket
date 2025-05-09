@@ -1,4 +1,4 @@
-import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, ActivityIndicator  } from 'react-native';
+import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, ActivityIndicator, SafeAreaView  } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useRouter, Stack } from 'expo-router';
 import { Product, fetchWeeklyOffers } from '@/services/productsService';
@@ -29,19 +29,16 @@ export default function AllOffersScreen() {
   );
 
   const renderItem = ({ item }: { item: Product }) => (
-    <View style={styles.card}>
+    <SafeAreaView style={styles.card}>
       <Image source={{ uri: item.image }} style={styles.image} />
       <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
       <Text style={styles.price}>${item.price.toFixed(2)}</Text>
-    </View>
+    </SafeAreaView>
   );
 
 
   return (
-    <>
-      <Stack.Screen options={{ headerShown: false }} />
-
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <TouchableOpacity onPress={() => router.replace('/(tabs)')}>
           <Text style={styles.backText}>← Volver</Text>
         </TouchableOpacity>
@@ -69,15 +66,14 @@ export default function AllOffersScreen() {
             contentContainerStyle={styles.list}
           />
         )}
-      </View>
-    </>
+      </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 32,
+    paddingTop: 60,
     paddingHorizontal: 16,
     backgroundColor: '#fff',
   },

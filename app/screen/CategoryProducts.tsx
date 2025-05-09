@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, ActivityIndicator, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, Image, ActivityIndicator, StyleSheet, Pressable, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Stack, useLocalSearchParams, router } from 'expo-router';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function CategoryProducts(){
   const { category } = useLocalSearchParams();
@@ -20,8 +21,9 @@ export default function CategoryProducts(){
 
   if (loading) {
     return (
-      <View style={styles.centered}>
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="orange" />
+        <Text style={styles.loadingText}>Cargando productos...</Text>
       </View>
     );
   }
@@ -35,41 +37,33 @@ export default function CategoryProducts(){
   }
 
   return (
-    
-    <>
-
-      <Stack.Screen options={{ headerShown: false }} />
-
       <View style={styles.container}>
 
-      <TouchableOpacity onPress={() => router.push('../screen/Categories')}>
-        <Text style={styles.link}>← Volver</Text>
-      </TouchableOpacity>
-      <FlatList style={{ backgroundColor: '#fff' }}
-        data={products}
-        keyExtractor={item => item.id.toString()}
-        numColumns={2}
-        columnWrapperStyle={styles.row}
-        contentContainerStyle={styles.list}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Image source={{ uri: item.image }} style={styles.image} />
-            <Text numberOfLines={2} style={styles.title}>{item.title}</Text>
-            <Text style={styles.price}>${item.price}</Text>
-          </View>
-        )}
-      />
+        <TouchableOpacity onPress={() => router.push('./Categories')}>
+          <Text style={styles.link}>← Volver</Text>
+        </TouchableOpacity>
+        <FlatList style={{ backgroundColor: '#fff' }}
+          data={products}
+          keyExtractor={item => item.id.toString()}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={styles.list}
+          renderItem={({ item }) => (
+            <SafeAreaView style={styles.card}>
+              <Image source={{ uri: item.image }} style={styles.image} />
+              <Text numberOfLines={2} style={styles.title}>{item.title}</Text>
+              <Text style={styles.price}>${item.price}</Text>
+            </SafeAreaView>
+          )}
+        />
       </View>
-
-    </>
-
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 32,
+    paddingTop: 60,
     paddingHorizontal: 16,
     backgroundColor: '#fff',
   },
@@ -114,4 +108,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 16,
   },
+  loadingText: {
+    color: '#555',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  }
 });

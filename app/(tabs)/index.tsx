@@ -28,7 +28,6 @@ export default function HomeScreen() {
           <WeeklyOffers />
         </View>
         
-
         {/* Categorías */}
         <View>
           <CategoriesPreview />
@@ -54,6 +53,7 @@ const styles = StyleSheet.create({
   container: { 
     flex: 1, 
     backgroundColor: '#fff',
+    paddingVertical: -40,
   },
   header: {
     flexDirection: 'row',

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import * as Location from 'expo-location';
+import { Icon } from 'react-native-vector-icons/Icon';
 
 const LocationHeader = () => {
   const [address, setAddress] = useState<string | null>(null);
