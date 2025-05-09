@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import {
   StyleSheet,
   Text,
@@ -7,8 +7,13 @@ import {
   TextInput,
   Button,
 } from "react-native";
+import { red } from "react-native-reanimated/lib/typescript/Colors";
 
 export default function Index() {
+  function redirectTo(arg0: string): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.formContainer}>
@@ -23,7 +28,8 @@ export default function Index() {
         title="Ingresar"
         color="#001f55"
         accessibilityLabel="Ingresar"
-        onPress={() => console.log("Loguearse")}
+        onPress={() => router.replace("/(tabs)")
+        }  
       >
       </Button>
 
