@@ -1,8 +1,7 @@
 import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, ActivityIndicator  } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'expo-router';
+import { useRouter, Stack } from 'expo-router';
 import { Product, fetchWeeklyOffers } from '@/services/productsService';
-import { Stack } from 'expo-router';
 
 export default function AllOffersScreen() {
   const router = useRouter();

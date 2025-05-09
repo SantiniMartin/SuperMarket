@@ -3,10 +3,10 @@ import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, ActivityIndi
 import { useRouter } from 'expo-router';
 
 const imageMap: Record<string, string> = {
-  "electronics": "https://i.imgur.com/MYOQkVQ.jpg",
-  "jewelery": "https://i.imgur.com/lP1zL1u.jpg",
-  "men's clothing": "https://i.imgur.com/7t3I8RZ.jpg",
-  "women's clothing": "https://i.imgur.com/YLx6aE2.jpg",
+  "electronics": "https://plus.unsplash.com/premium_photo-1683121716061-3faddf4dc504?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "jewelery": "https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "men's clothing": "https://images.unsplash.com/photo-1512436991641-6745cdb1723f",
+  "women's clothing": "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 };
 
 const CategoriesPreview = () => {
@@ -36,7 +36,7 @@ const CategoriesPreview = () => {
   }
 
   return (
-    <View>
+    <View style={{ marginVertical: 16, width: '100%' }}>
       <View style={styles.header}>
         <Text style={styles.title}>Categorías</Text>
         <TouchableOpacity onPress={() => router.push('./screen/Categories')}>
@@ -53,7 +53,7 @@ const CategoriesPreview = () => {
               imageStyle={{ borderRadius: 10 }}
             >
               <View style={styles.overlay}>
-                <Text style={styles.categoryText}>{cat.toUpperCase()}</Text>
+                <Text style={styles.categoryText}>{cat}</Text>
               </View>
             </ImageBackground>
           </TouchableOpacity>
@@ -63,18 +63,16 @@ const CategoriesPreview = () => {
   );
 };
 
-export default CategoriesPreview;
-
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 8,
-    marginHorizontal: 8,
+    alignItems: 'center',
   },
   title: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 20,
   },
   link: {
     color: 'blue',
@@ -84,7 +82,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: 10,
-    paddingHorizontal: 8,
   },
   card: {
     flex: 1,
@@ -107,3 +104,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
+
+export default CategoriesPreview;

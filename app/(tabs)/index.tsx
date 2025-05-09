@@ -1,3 +1,4 @@
+import CategoriesPreview from '@/components/CategoriesPreview';
 import LocationHeader from '@/components/LocationHeader';
 import WeeklyOffers from '@/components/WeeklyOffers';
 import React from 'react';
@@ -29,15 +30,8 @@ export default function HomeScreen() {
         
 
         {/* Categorías */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Categorías</Text>
-          <TouchableOpacity>
-            <Text style={styles.link}>Ver todo</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.grid}>
-          <View style={styles.smallCard}></View>
-          <View style={styles.smallCard}></View>
+        <View>
+          <CategoriesPreview />
         </View>
 
         {/* Mejores ofertas hoy */}
@@ -85,7 +79,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   link: { color: 'blue' },
   grid: {

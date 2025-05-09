@@ -33,7 +33,8 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
         <Stack.Screen name="AllOffers" options={{ title: 'Todas las ofertas' }}/>
-        <Stack screenOptions={{ headerShown: true }} />;
+        <Stack.Screen name="Categores" options={{ title: 'Todas las categorias' }}/>
+        <Stack.Screen name="CategoryProducts" options={{ title: 'Todas las categorias' }}/>
       </Stack>
       {/* <StatusBar style="auto"/> */}
     </ThemeProvider>

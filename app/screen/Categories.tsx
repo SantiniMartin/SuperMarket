@@ -1,169 +1,119 @@
-// app/category/[name].tsx
-
+import { View, Text, ImageBackground, Pressable, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, ActivityIndicator, TouchableOpacity, TextInput } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 
-const CategoryPage = () => {
-  const { name } = useLocalSearchParams();
-  const router = useRouter();
-
-  const [products, setProducts] = useState<any[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
-
-  useEffect(() => {
-    const fetchCategoryProducts = async () => {
-      try {
-        const response = await fetch(`https://fakestoreapi.com/products/category/${name}`);
-        const data = await response.json();
-        setProducts(data);
-        setFilteredProducts(data);
-      } catch (error) {
-        console.error('Error fetching category products:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCategoryProducts();
-  }, [name]);
-
-  const applyFilters = () => {
-    const min = parseFloat(minPrice) || 0;
-    const max = parseFloat(maxPrice) || Number.MAX_VALUE;
-
-    const filtered = products.filter(
-      (item) => item.price >= min && item.price <= max
-    );
-
-    setFilteredProducts(filtered);
-  };
-
-  if (loading) {
-    return <ActivityIndicator size="large" color="#f57c00" style={{ marginTop: 20 }} />;
-  }
-
-  return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => router.back()}>
-        <Text style={styles.back}>← Volver</Text>
-      </TouchableOpacity>
-      <Text style={styles.title}>Productos de {name}</Text>
-
-      <View style={styles.filterContainer}>
-        <TextInput
-          placeholder="Precio mínimo"
-          keyboardType="numeric"
-          value={minPrice}
-          onChangeText={setMinPrice}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="Precio máximo"
-          keyboardType="numeric"
-          value={maxPrice}
-          onChangeText={setMaxPrice}
-          style={styles.input}
-        />
-        <TouchableOpacity onPress={applyFilters} style={styles.filterButton}>
-          <Text style={styles.filterButtonText}>Filtrar</Text>
-        </TouchableOpacity>
-      </View>
-
-      {filteredProducts.length === 0 ? (
-        <Text style={styles.noResults}>No se encontraron productos.</Text>
-      ) : (
-        <FlatList
-          data={filteredProducts}
-          numColumns={2}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles.grid}
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              <Image source={{ uri: item.image }} style={styles.image} resizeMode="contain" />
-              <Text style={styles.productTitle} numberOfLines={2}>{item.title}</Text>
-              <Text style={styles.price}>${item.price}</Text>
-            </View>
-          )}
-        />
-      )}
-    </View>
-  );
+const CATEGORY_IMAGES = {
+  "electronics": 'https://plus.unsplash.com/premium_photo-1683121716061-3faddf4dc504?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  "jewelery": 'https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+  "men's clothing": 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f',
+  "women's clothing": 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
 };
 
-export default CategoryPage;
+export default function Categories (){
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    fetch('https://fakestoreapi.com/products/categories')
+      .then((res) => res.json())
+      .then((data) => {
+        setCategories(data);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="orange" />
+        <Text style={styles.loadingText}>Cargando productos...</Text>
+      </View>
+    );
+  }
+
+  // ✅ CORREGIDO: navegación como string simple con query param
+  const handlePress = (category : any) => {
+    router.push(`./CategoryProducts?category=${encodeURIComponent(category)}`);
+  };
+
+  return (
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <View style={styles.container}>
+        <TouchableOpacity onPress={() => router.push('/(tabs)')}>
+          <Text style={styles.link}>← Volver</Text>
+        </TouchableOpacity>
+        <FlatList
+          data={categories}
+          keyExtractor={(item) => item}
+          numColumns={1}
+          contentContainerStyle={styles.list}
+          renderItem={({ item }) => (
+            <Pressable style={styles.card} onPress={() => handlePress(item)}>
+              <ImageBackground
+                source={{ uri: CATEGORY_IMAGES[item] || 'https://via.placeholder.com/150' }}
+                resizeMode="cover"
+                style={styles.imageBackground}
+                imageStyle={{ borderRadius: 12 }}
+              >
+                <View style={styles.overlay}>
+                  <Text style={styles.categoryText}>{item}</Text>
+                </View>
+              </ImageBackground>
+            </Pressable>
+          )}
+        />
+      </View>
+    </>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 12,
-    backgroundColor: 'white',
-  },
-  back: {
-    color: '#f57c00',
-    marginBottom: 8,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 12,
-  },
-  filterContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 10,
-  },
-  input: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#f57c00',
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-  },
-  filterButton: {
-    backgroundColor: '#f57c00',
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  filterButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  noResults: {
-    textAlign: 'center',
-    marginTop: 20,
-    color: 'gray',
-  },
-  grid: {
-    gap: 12,
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    paddingTop: 32,
   },
   card: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    flexDirection: 'row',
+    margin: 8,
+    height: 150,
     borderRadius: 12,
-    padding: 10,
-    margin: 5,
+    overflow: 'hidden',
+  },
+  imageBackground: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  overlay: {
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    padding: 8,
+  },
+  categoryText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
+    textTransform: 'capitalize',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  image: {
-    width: 80,
-    height: 80,
+  list: {
+    paddingBottom: 24,
+  },
+  link:{
+    color: 'blue',
+    fontSize: 14,
     marginBottom: 8,
   },
-  productTitle: {
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  price: {
-    fontWeight: 'bold',
-    color: '#f57c00',
-    marginTop: 4,
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: '#555',
   },
 });
