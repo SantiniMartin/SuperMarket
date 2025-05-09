@@ -53,7 +53,7 @@ const CategoriesPreview = () => {
               imageStyle={{ borderRadius: 10 }}
             >
               <View style={styles.overlay}>
-                <Text style={styles.categoryText}>{cat}</Text>
+                <Text style={styles.categoryText}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</Text>
               </View>
             </ImageBackground>
           </TouchableOpacity>

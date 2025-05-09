@@ -13,7 +13,7 @@ export default function HomeScreen() {
       {/* Ubicación, búsqueda y notificación */}
       <SafeAreaView style={styles.header}>
         <View style={styles.locationContainer}>
-          <Icon name="location-outline" size={20} />
+          <Icon style={styles.iconLocation} name="location-outline" size={20} />
           <LocationHeader />
         </View>
         <View style={styles.headerIcons}>
@@ -99,5 +99,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderTopWidth: 1,
     borderColor: '#ccc'
+  },
+  iconLocation:{
+    color: '#ff0000',
+    fontSize: 26,
   }
 });
