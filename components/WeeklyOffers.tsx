@@ -1,17 +1,17 @@
-// components/WeeklyOffers.tsx
-
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
-import { fetchWeeklyOffers, Product } from '../services/productsService';
+import { View, Text, Image, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { fetchWeeklyOffers, Product } from '@/services/productsService';
+import { useRouter } from 'expo-router';
 
 const WeeklyOffers = () => {
   const [offers, setOffers] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter(); // ← CAMBIO
 
   useEffect(() => {
     const loadOffers = async () => {
       const data = await fetchWeeklyOffers();
-      setOffers(data);
+      setOffers(data.slice(0, 5)); // solo las 5 primeras para esta sección
       setLoading(false);
     };
 
@@ -24,7 +24,13 @@ const WeeklyOffers = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Ofertas Semanales</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>Ofertas Semanales</Text>
+        <TouchableOpacity onPress={() => router.push('/screen/AllOffers')}>
+          <Text style={styles.seeAll}>Ver todos</Text>
+        </TouchableOpacity>
+      </View>
+
       <FlatList
         data={offers}
         keyExtractor={(item) => item.id.toString()}
@@ -46,18 +52,26 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: 16,
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 8,
-    marginLeft: 16,
+  },
+  seeAll: {
+    fontSize: 14,
+    color: 'blue',
   },
   card: {
-    marginVertical: 4,
     backgroundColor: '#fff',
     borderRadius: 6,
     padding: 8,
     marginHorizontal: 8,
+    marginVertical: 4,
     alignItems: 'center',
     width: 140,
     elevation: 3,

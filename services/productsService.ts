@@ -19,8 +19,8 @@ export const fetchWeeklyOffers = async (): Promise<Product[]> => {
     const products: Product[] = await response.json();
 
     // Simular ofertas seleccionando aleatoriamente 5 productos
-    const shuffled = products.sort(() => 0.5 - Math.random());
-    const selected = shuffled.slice(0, 5);
+    const shuffled = products;
+    const selected = shuffled;
 
     return selected;
   } catch (error) {

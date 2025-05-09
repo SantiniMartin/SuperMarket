@@ -32,17 +32,10 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
+        <Stack.Screen name="AllOffers" options={{ title: 'Todas las ofertas' }}/>
+        <Stack screenOptions={{ headerShown: true }} />;
       </Stack>
       {/* <StatusBar style="auto"/> */}
     </ThemeProvider>
-
-    /*
-    Ahora necesito que añadas funcionalidades, 
-    arranquemos con la sección de ofertas semanales, 
-    necesito que utilices alguna api publica para obtener los datos y poder simular mostrar unos productos 
-    que están en oferta, 
-    necesito que crees los archivos necesarios para poder integrar o importar luego en el home 
-    y que consuma para poder mostar
-    */
   );
 }
