@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, SafeAreaView, Image, Modal, ScrollView } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, SafeAreaView, Image, Modal, ScrollView, Animated } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { fetchProducts, fetchCategories } from '@/services/api';
 import { Product } from '@/services/productsService';
 import { Stack, useRouter } from 'expo-router';
+import { useFavorites } from '@/context/FavoritesContext';
 
 export default function SearchScreen() {
   const [search, setSearch] = useState('');
@@ -16,6 +17,26 @@ export default function SearchScreen() {
   const [filterModal, setFilterModal] = useState(false);
   const [sortOption, setSortOption] = useState('');
   const router = useRouter();
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+
+  // Animación de pop para el corazón
+  const scaleAnim = useRef<{ [key: number]: Animated.Value }>({}).current;
+  const triggerPop = (id: number) => {
+    if (!scaleAnim[id]) scaleAnim[id] = new Animated.Value(1);
+    Animated.sequence([
+      Animated.timing(scaleAnim[id], { toValue: 1.3, duration: 120, useNativeDriver: true }),
+      Animated.timing(scaleAnim[id], { toValue: 1, duration: 120, useNativeDriver: true })
+    ]).start();
+  };
+
+  const handleFavorite = (item: Product) => {
+    triggerPop(item.id);
+    if (isFavorite(item.id)) {
+      removeFavorite(item.id);
+    } else {
+      addFavorite(item);
+    }
+  };
 
   useEffect(() => {
     async function loadData() {
@@ -53,28 +74,40 @@ export default function SearchScreen() {
     setFiltered(filteredList);
   }, [search, products, selectedCategory, sortOption]);
 
-  const renderProduct = ({ item }: { item: Product }) => (
-    <View style={styles.card}>
-      <TouchableOpacity style={styles.favoriteBtn}>
-        <Icon name="heart-outline" size={20} color="#e53935" />
-      </TouchableOpacity>
-      <View style={styles.imageBox}>
-        {item.thumbnail ? (
-          <Image source={{ uri: item.thumbnail }} style={{ width: 60, height: 60, resizeMode: 'contain', borderRadius: 10 }} />
-        ) : (
-          <Text style={{ color: '#bbb' }}>Img Product</Text>
-        )}
-      </View>
-      <Text style={styles.productName} numberOfLines={2}>{item.title}</Text>
-      <Text style={styles.storeName}>{item.brand}</Text>
-      <View style={styles.priceRow}>
-        <Text style={styles.price}>${item.price.toFixed(2)}</Text>
-        <TouchableOpacity style={styles.cartBtn}>
-          <Icon name="cart-outline" size={18} color="#2e7d32" />
+  const renderProduct = ({ item }: { item: Product }) => {
+    if (!scaleAnim[item.id]) scaleAnim[item.id] = new Animated.Value(1);
+    return (
+      <View style={styles.card}>
+        <TouchableOpacity
+          style={styles.favoriteBtn}
+          onPress={() => handleFavorite(item)}
+        >
+          <Animated.View style={{ transform: [{ scale: scaleAnim[item.id] }] }}>
+            <Icon
+              name={isFavorite(item.id) ? 'heart' : 'heart-outline'}
+              size={20}
+              color={isFavorite(item.id) ? '#e53935' : '#e53935'}
+            />
+          </Animated.View>
         </TouchableOpacity>
+        <View style={styles.imageBox}>
+          {item.thumbnail ? (
+            <Image source={{ uri: item.thumbnail }} style={{ width: 60, height: 60, resizeMode: 'contain', borderRadius: 10 }} />
+          ) : (
+            <Text style={{ color: '#bbb' }}>Img Product</Text>
+          )}
+        </View>
+        <Text style={styles.productName} numberOfLines={2}>{item.title}</Text>
+        <Text style={styles.storeName}>{item.brand}</Text>
+        <View style={styles.priceRow}>
+          <Text style={styles.price}>${item.price.toFixed(2)}</Text>
+          <TouchableOpacity style={styles.cartBtn}>
+            <Icon name="cart-outline" size={18} color="#2e7d32" />
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <>

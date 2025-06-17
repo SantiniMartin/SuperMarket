@@ -2,6 +2,8 @@ import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, A
 import React, { useEffect, useState } from 'react';
 import { useRouter, Stack } from 'expo-router';
 import { Product, fetchWeeklyOffers } from '@/services/productsService';
+import { useFavorites } from '@/context/FavoritesContext';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const PAGE_SIZE = 20;
 
@@ -13,6 +15,7 @@ export default function AllOffersScreen() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [skip, setSkip] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
 
   const loadOffers = async (reset = false) => {
     if (!reset && loadingMore) return;
@@ -46,6 +49,16 @@ export default function AllOffersScreen() {
 
   const renderItem = ({ item }: { item: Product }) => (
     <SafeAreaView style={styles.card}>
+      <TouchableOpacity
+        style={styles.favoriteBtn}
+        onPress={() => isFavorite(item.id) ? removeFavorite(item.id) : addFavorite(item)}
+      >
+        <Icon
+          name={isFavorite(item.id) ? 'heart' : 'heart-outline'}
+          size={20}
+          color={isFavorite(item.id) ? '#e53935' : '#e53935'}
+        />
+      </TouchableOpacity>
       <View style={styles.imageBox}>
         <Image source={{ uri: item.thumbnail }} style={styles.image} />
       </View>
@@ -56,6 +69,9 @@ export default function AllOffersScreen() {
       </View>
       <Text style={styles.oldPrice}>Antes: ${(item.price / (1 - (item.discountPercentage || 0) / 100)).toFixed(2)}</Text>
       <Text style={styles.brand}>{item.brand}</Text>
+      <TouchableOpacity style={styles.cartBtn}>
+        <Icon name="cart-outline" size={20} color="#2e7d32" />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 
@@ -224,5 +240,19 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  favoriteBtn: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 2,
+  },
+  cartBtn: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    backgroundColor: '#e8f5e9',
+    borderRadius: 8,
+    padding: 6,
   },
 });

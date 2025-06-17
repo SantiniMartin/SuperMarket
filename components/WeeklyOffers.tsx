@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { fetchWeeklyOffers, fetchDailyOffers, Product } from '@/services/productsService';
 import { useRouter } from 'expo-router';
+import { useFavorites } from '@/context/FavoritesContext';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const WeeklyOffers = () => {
   const [offers, setOffers] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter(); // ← CAMBIO
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
 
   useEffect(() => {
     const loadOffers = async () => {
@@ -38,6 +41,16 @@ const WeeklyOffers = () => {
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => (
           <View style={styles.card}>
+            <TouchableOpacity
+              style={styles.favoriteBtn}
+              onPress={() => isFavorite(item.id) ? removeFavorite(item.id) : addFavorite(item)}
+            >
+              <Icon
+                name={isFavorite(item.id) ? 'heart' : 'heart-outline'}
+                size={20}
+                color={isFavorite(item.id) ? '#e53935' : '#e53935'}
+              />
+            </TouchableOpacity>
             <View style={styles.imageBox}>
               <Image source={{ uri: item.thumbnail }} style={styles.image} />
             </View>
@@ -48,6 +61,9 @@ const WeeklyOffers = () => {
             </View>
             <Text style={styles.oldPrice}>Antes: ${(item.price / (1 - (item.discountPercentage || 0) / 100)).toFixed(2)}</Text>
             <Text style={styles.brand}>{item.brand}</Text>
+            <TouchableOpacity style={styles.cartBtn}>
+              <Icon name="cart-outline" size={20} color="#2e7d32" />
+            </TouchableOpacity>
           </View>
         )}
       />
@@ -59,6 +75,7 @@ export const DailyOffers = () => {
   const [offers, setOffers] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
 
   useEffect(() => {
     const loadOffers = async () => {
@@ -88,6 +105,16 @@ export const DailyOffers = () => {
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => (
           <View style={styles.card}>
+            <TouchableOpacity
+              style={styles.favoriteBtn}
+              onPress={() => isFavorite(item.id) ? removeFavorite(item.id) : addFavorite(item)}
+            >
+              <Icon
+                name={isFavorite(item.id) ? 'heart' : 'heart-outline'}
+                size={20}
+                color={isFavorite(item.id) ? '#e53935' : '#e53935'}
+              />
+            </TouchableOpacity>
             <View style={styles.imageBox}>
               <Image source={{ uri: item.thumbnail }} style={styles.image} />
             </View>
@@ -98,6 +125,9 @@ export const DailyOffers = () => {
             </View>
             <Text style={styles.oldPrice}>Antes: ${(item.price / (1 - (item.discountPercentage || 0) / 100)).toFixed(2)}</Text>
             <Text style={styles.brand}>{item.brand}</Text>
+            <TouchableOpacity style={styles.cartBtn}>
+              <Icon name="cart-outline" size={20} color="#2e7d32" />
+            </TouchableOpacity>
           </View>
         )}
       />
@@ -193,6 +223,20 @@ const styles = StyleSheet.create({
     color: '#555',
     fontSize: 13,
     marginTop: 2,
+  },
+  favoriteBtn: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 2,
+  },
+  cartBtn: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    backgroundColor: '#e8f5e9',
+    borderRadius: 8,
+    padding: 6,
   },
 });
 
