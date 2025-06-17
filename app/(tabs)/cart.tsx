@@ -6,4 +6,4 @@ export default function CartScreen() {
       <Text>Pantalla del Carrito</Text>
     </View>
   );
-}
+} 
