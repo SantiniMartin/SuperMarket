@@ -4,21 +4,73 @@ import { fetchWeeklyOffers, fetchDailyOffers, Product } from '@/services/product
 import { useRouter } from 'expo-router';
 import { useFavorites } from '@/context/FavoritesContext';
 import Icon from 'react-native-vector-icons/Ionicons';
+import productosData from '../productos_supermercados_actualizado.json';
+
+// Mapa estático de imágenes locales
+const productImages: { [key: string]: any } = {
+  'desodorante.webp': require('../assets/images/products/desodorante.webp'),
+  'mayonesa.webp': require('../assets/images/products/mayonesa.webp'),
+  'toallas femeninas.webp': require('../assets/images/products/toallas femeninas.webp'),
+  'papel higienico.jpg': require('../assets/images/products/papel higienico.jpg'),
+  'mermelada.webp': require('../assets/images/products/mermelada.webp'),
+  'lentejas.png': require('../assets/images/products/lentejas.png'),
+  'sal dos anclas.webp': require('../assets/images/products/sal dos anclas.webp'),
+  'fideo spaghetti.jpg': require('../assets/images/products/fideo spaghetti.jpg'),
+  'manteca sancor.jpeg': require('../assets/images/products/manteca sancor.jpeg'),
+  'pure de tomate.jpg': require('../assets/images/products/pure de tomate.jpg'),
+  'carne.jpg': require('../assets/images/products/carne.jpg'),
+  'pechuga de polloo.png': require('../assets/images/products/pechuga de polloo.png'),
+  'manzana.jpg': require('../assets/images/products/manzana.jpg'),
+  'cebolla.jpg': require('../assets/images/products/cebolla.jpg'),
+  'banana.jpg': require('../assets/images/products/banana.jpg'),
+  'atun la campagnola.webp': require('../assets/images/products/atun la campagnola.webp'),
+  'gaseosa coca cola.jpg': require('../assets/images/products/gaseosa coca cola.jpg'),
+  'cerveza quilmes.jpg': require('../assets/images/products/cerveza quilmes.jpg'),
+  'detergente ala.jpg': require('../assets/images/products/detergente ala.jpg'),
+  'cacao nesquik.jpg': require('../assets/images/products/cacao nesquik.jpg'),
+  'arveja arcor.jpeg': require('../assets/images/products/arveja arcor.jpeg'),
+  'azucar ledesma.jpg': require('../assets/images/products/azucar ledesma.jpg'),
+  'yerba taragui.webp': require('../assets/images/products/yerba taragui.webp'),
+  'pan bimbo.webp': require('../assets/images/products/pan bimbo.webp'),
+  'queso cremoso.jpg': require('../assets/images/products/queso cremoso.jpg'),
+  'leche sancor.jpg': require('../assets/images/products/leche sancor.jpg'),
+  'shampoo sedal.webp': require('../assets/images/products/shampoo sedal.webp'),
+  'lavandina con ayudin.jpg': require('../assets/images/products/lavandina con ayudin.jpg'),
+  'galletita bagley.webp': require('../assets/images/products/galletita bagley.webp'),
+  'harina cañuelas.jpg': require('../assets/images/products/harina cañuelas.jpg'),
+  'zanahorias.jpg': require('../assets/images/products/zanahorias.jpg'),
+  'aceite cocinero.jpg': require('../assets/images/products/aceite cocinero.jpg'),
+  'arroz gallo.png': require('../assets/images/products/arroz gallo.png'),
+  'café la morenita.jpg': require('../assets/images/products/café la morenita.jpg'),
+  'agua mineral.jpg': require('../assets/images/products/agua mineral.jpg'),
+  'pañales.webp': require('../assets/images/products/pañales.webp'),
+  'jugo en polvo.jpeg': require('../assets/images/products/jugo en polvo.jpeg'),
+  'choclo en lata.jpg': require('../assets/images/products/choclo en lata.jpg'),
+  'jabon de tocador.jpg': require('../assets/images/products/jabon de tocador.jpg'),
+};
+
+function getProductImageSource(image_url: string, category_image_url: string) {
+  if (image_url && !image_url.startsWith('http')) {
+    if (productImages[image_url]) {
+      return productImages[image_url];
+    }
+    return { uri: category_image_url || 'https://via.placeholder.com/150' };
+  }
+  return { uri: image_url || category_image_url || 'https://via.placeholder.com/150' };
+}
 
 const WeeklyOffers = () => {
-  const [offers, setOffers] = useState<Product[]>([]);
+  const [offers, setOffers] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const router = useRouter(); // ← CAMBIO
+  const router = useRouter();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
 
   useEffect(() => {
-    const loadOffers = async () => {
-      const data = await fetchWeeklyOffers(5, 0); // solo las 5 primeras para esta sección
-      setOffers(data);
-      setLoading(false);
-    };
-
-    loadOffers();
+    // Tomar productos con oferta del JSON local
+    const allProducts = productosData.supermarkets.flatMap((s: any) => s.products.map((p: any) => ({...p, supermarket: s.name, logo_url: s.logo_url})));
+    const offers = allProducts.filter((p: any) => p.has_offer).slice(0, 5);
+    setOffers(offers);
+    setLoading(false);
   }, []);
 
   if (loading) {
@@ -36,10 +88,10 @@ const WeeklyOffers = () => {
 
       <FlatList
         data={offers}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id}
         horizontal
         showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => (
+        renderItem={({ item }: { item: any }) => (
           <View style={styles.card}>
             <TouchableOpacity
               style={styles.favoriteBtn}
@@ -52,15 +104,17 @@ const WeeklyOffers = () => {
               />
             </TouchableOpacity>
             <View style={styles.imageBox}>
-              <Image source={{ uri: item.thumbnail }} style={styles.image} />
+              <Image source={getProductImageSource(item.image_url, item['category_image_url'] ?? '')} style={styles.image} />
             </View>
-            <Text style={styles.productTitle} numberOfLines={2}>{item.title}</Text>
+            <Text style={styles.productTitle} numberOfLines={2}>{item.name}</Text>
             <View style={styles.priceRow}>
               <Text style={styles.price}>${item.price.toFixed(2)}</Text>
-              <Text style={styles.discount}> -{item.discountPercentage}%</Text>
+              <Text style={styles.discount}> -{item.discount_percent}%</Text>
             </View>
-            <Text style={styles.oldPrice}>Antes: ${(item.price / (1 - (item.discountPercentage || 0) / 100)).toFixed(2)}</Text>
-            <Text style={styles.brand}>{item.brand}</Text>
+            <Text style={styles.oldPrice}>Antes: ${(item.price / (1 - (item.discount_percent || 0) / 100)).toFixed(2)}</Text>
+            <Text style={styles.brand}>{item.brand || ''}</Text>
+            <Text style={[styles.brand, { fontSize: 12, color: '#aaa' }]}>{item.category || ''}</Text>
+            <Text style={[styles.brand, { fontSize: 12, color: '#aaa' }]}>{item['supermarket_name'] || item['supermarket'] || ''}</Text>
             <TouchableOpacity style={styles.cartBtn}>
               <Icon name="cart-outline" size={20} color="#2e7d32" />
             </TouchableOpacity>
@@ -103,7 +157,7 @@ export const DailyOffers = () => {
         keyExtractor={(item) => item.id.toString()}
         horizontal
         showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => (
+        renderItem={({ item }: { item: any }) => (
           <View style={styles.card}>
             <TouchableOpacity
               style={styles.favoriteBtn}
@@ -116,7 +170,7 @@ export const DailyOffers = () => {
               />
             </TouchableOpacity>
             <View style={styles.imageBox}>
-              <Image source={{ uri: item.thumbnail }} style={styles.image} />
+              <Image source={getProductImageSource(item.thumbnail, item['category_image_url'] ?? '')} style={styles.image} />
             </View>
             <Text style={styles.productTitle} numberOfLines={2}>{item.title}</Text>
             <View style={styles.priceRow}>
@@ -124,7 +178,9 @@ export const DailyOffers = () => {
               <Text style={styles.discount}> -{item.discountPercentage}%</Text>
             </View>
             <Text style={styles.oldPrice}>Antes: ${(item.price / (1 - (item.discountPercentage || 0) / 100)).toFixed(2)}</Text>
-            <Text style={styles.brand}>{item.brand}</Text>
+            <Text style={styles.brand}>{item.brand || ''}</Text>
+            <Text style={[styles.brand, { fontSize: 12, color: '#aaa' }]}>{item.category || ''}</Text>
+            <Text style={[styles.brand, { fontSize: 12, color: '#aaa' }]}>{item['supermarket_name'] || item['supermarket'] || ''}</Text>
             <TouchableOpacity style={styles.cartBtn}>
               <Icon name="cart-outline" size={20} color="#2e7d32" />
             </TouchableOpacity>
