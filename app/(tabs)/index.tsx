@@ -15,14 +15,14 @@ export default function HomeScreen() {
       {/* Ubicación, búsqueda y notificación */}
       <SafeAreaView style={styles.header}>
         <View style={styles.locationContainer}>
-          <Icon style={styles.iconLocation} name="location-outline" size={20} />
+          <Icon style={[styles.iconLocation, { color: '#ff0000' }]} name="location-outline" size={20} />
           <LocationHeader />
         </View>
         <View style={styles.headerIcons}>
           <TouchableOpacity onPress={() => router.push('/search')}>
-            <Icon name="search-outline" size={24} style={styles.icon} />
+            <Icon name="search-outline" size={24} style={[styles.icon, { color: '#222' }]} />
           </TouchableOpacity>
-          <Icon name="notifications-outline" size={24} style={styles.icon} />
+          <Icon name="notifications-outline" size={24} style={[styles.icon, { color: '#222' }]} />
         </View>
       </SafeAreaView>
 

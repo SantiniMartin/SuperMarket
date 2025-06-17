@@ -4,48 +4,59 @@ import { Link } from 'expo-router';
 import React, { useState } from 'react';
 import { Colors } from '@/constants/Colors';
 import { useAuth } from '@/context/AuthContext';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useAuth();
+  const [errorMsg, setErrorMsg] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
+    setErrorMsg('');
     try {
       await login(email, password);
-    } catch (error) {
-      console.error('Error during login:', error);
-      // Aquí podrías mostrar un mensaje de error al usuario
+    } catch (error: any) {
+      setErrorMsg(error.message || 'Error al iniciar sesión');
     }
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.formBox}>
+      <>
         <Text style={styles.title}>Iniciar Sesión</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Correo electrónico"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          placeholderTextColor="#888"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Contraseña"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          placeholderTextColor="#888"
-        />
+        {errorMsg ? <Text style={styles.error}>{errorMsg}</Text> : null}
+        <View style={{ width: '100%', position: 'relative', marginBottom: 14 }}>
+          <TextInput
+            style={[styles.input, { marginBottom: 0 }]}
+            placeholder="Correo electrónico"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            placeholderTextColor="#888"
+          />
+        </View>
+        <View style={{ width: '100%', position: 'relative', marginBottom: 14 }}>
+          <TextInput
+            style={[styles.input, { marginBottom: 0 }]}
+            placeholder="Contraseña"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+            placeholderTextColor="#888"
+          />
+          <TouchableOpacity style={styles.eyeIconAbsolute} onPress={() => setShowPassword(v => !v)}>
+            <Icon name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={22} color="#888" />
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>INGRESAR</Text>
         </TouchableOpacity>
         <Link href="/register" style={styles.link}>
           ¿No tenés cuenta? Registrate
         </Link>
-      </View>
+      </>
     </View>
   );
 }
@@ -56,6 +67,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f5f6fa',
+    paddingHorizontal: 24,
   },
   formBox: {
     width: '100%',
@@ -113,5 +125,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '500',
     fontSize: 15,
+  },
+  error: {
+    color: '#e53935',
+    fontSize: 14,
+    marginBottom: 10,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  eyeIconAbsolute: {
+    position: 'absolute',
+    right: 16,
+    top: 0,
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 2,
   },
 });

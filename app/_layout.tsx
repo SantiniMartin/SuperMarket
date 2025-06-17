@@ -8,6 +8,7 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { FavoritesProvider } from '@/context/FavoritesContext';
+import { ThemeProviderCustom, useThemeCustom } from '@/context/ThemeContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -41,24 +42,19 @@ function RootLayoutNav() {
   );
 }
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+function ThemedRoot() {
+  const { theme } = useThemeCustom();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
-
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
+  if (!loaded) return null;
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
       <AuthProvider>
         <FavoritesProvider>
           <RootLayoutNav />
@@ -66,5 +62,13 @@ export default function RootLayout() {
         </FavoritesProvider>
       </AuthProvider>
     </ThemeProvider>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <ThemeProviderCustom>
+      <ThemedRoot />
+    </ThemeProviderCustom>
   );
 }
