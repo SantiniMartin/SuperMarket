@@ -6,4 +6,4 @@ export default function TiendasScreen() {
       <Text>Pantalla de Tiendas</Text>
     </View>
   );
-}
+} 

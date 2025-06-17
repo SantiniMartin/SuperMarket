@@ -1,49 +1,44 @@
 import CategoriesPreview from '@/components/CategoriesPreview';
 import LocationHeader from '@/components/LocationHeader';
 import WeeklyOffers from '@/components/WeeklyOffers';
+import { DailyOffers } from '@/components/WeeklyOffers';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
+  const router = useRouter();
   return (
-
     <SafeAreaView style={styles.container}>
       {/* Ubicación, búsqueda y notificación */}
       <SafeAreaView style={styles.header}>
         <View style={styles.locationContainer}>
-          <Icon name="location-outline" size={20} />
+          <Icon style={[styles.iconLocation, { color: '#ff0000' }]} name="location-outline" size={20} />
           <LocationHeader />
         </View>
         <View style={styles.headerIcons}>
-          <Icon name="search-outline" size={24} style={styles.icon} />
-          <Icon name="notifications-outline" size={24} style={styles.icon} />
+          <TouchableOpacity onPress={() => router.push('/search')}>
+            <Icon name="search-outline" size={24} style={[styles.icon, { color: '#222' }]} />
+          </TouchableOpacity>
+          <Icon name="notifications-outline" size={24} style={[styles.icon, { color: '#222' }]} />
         </View>
       </SafeAreaView>
 
       <ScrollView style={styles.body}>
+        {/* Mejores ofertas hoy */}
+        <View>
+          <DailyOffers />
+        </View>
         {/* Ofertas semanales */}
         <View>
           <WeeklyOffers />
         </View>
         
-
         {/* Categorías */}
         <View>
           <CategoriesPreview />
-        </View>
-
-        {/* Mejores ofertas hoy */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Mejores ofertas hoy</Text>
-          <TouchableOpacity>
-            <Text style={styles.link}>Ver todo</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.grid}>
-          <View style={styles.smallCard}></View>
-          <View style={styles.smallCard}></View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -54,6 +49,7 @@ const styles = StyleSheet.create({
   container: { 
     flex: 1, 
     backgroundColor: '#fff',
+    paddingVertical: -40,
   },
   header: {
     flexDirection: 'row',
@@ -99,5 +95,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderTopWidth: 1,
     borderColor: '#ccc'
+  },
+  iconLocation:{
+    color: '#ff0000',
+    fontSize: 26,
   }
 });
