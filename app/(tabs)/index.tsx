@@ -1,14 +1,16 @@
 import CategoriesPreview from '@/components/CategoriesPreview';
 import LocationHeader from '@/components/LocationHeader';
 import WeeklyOffers from '@/components/WeeklyOffers';
+import { DailyOffers } from '@/components/WeeklyOffers';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
+  const router = useRouter();
   return (
-
     <SafeAreaView style={styles.container}>
       {/* Ubicación, búsqueda y notificación */}
       <SafeAreaView style={styles.header}>
@@ -17,12 +19,18 @@ export default function HomeScreen() {
           <LocationHeader />
         </View>
         <View style={styles.headerIcons}>
-          <Icon name="search-outline" size={24} style={styles.icon} />
+          <TouchableOpacity onPress={() => router.push('/search')}>
+            <Icon name="search-outline" size={24} style={styles.icon} />
+          </TouchableOpacity>
           <Icon name="notifications-outline" size={24} style={styles.icon} />
         </View>
       </SafeAreaView>
 
       <ScrollView style={styles.body}>
+        {/* Mejores ofertas hoy */}
+        <View>
+          <DailyOffers />
+        </View>
         {/* Ofertas semanales */}
         <View>
           <WeeklyOffers />
@@ -31,18 +39,6 @@ export default function HomeScreen() {
         {/* Categorías */}
         <View>
           <CategoriesPreview />
-        </View>
-
-        {/* Mejores ofertas hoy */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Mejores ofertas hoy</Text>
-          <TouchableOpacity>
-            <Text style={styles.link}>Ver todo</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.grid}>
-          <View style={styles.smallCard}></View>
-          <View style={styles.smallCard}></View>
         </View>
       </ScrollView>
     </SafeAreaView>

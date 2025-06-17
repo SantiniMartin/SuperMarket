@@ -1,27 +1,43 @@
-import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, ActivityIndicator, SafeAreaView  } from 'react-native';
+import { View, Text, TextInput, FlatList, Image, StyleSheet, TouchableOpacity, ActivityIndicator, SafeAreaView, ImageBackground } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useRouter, Stack } from 'expo-router';
 import { Product, fetchWeeklyOffers } from '@/services/productsService';
+
+const PAGE_SIZE = 20;
 
 export default function AllOffersScreen() {
   const router = useRouter();
   const [offers, setOffers] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [skip, setSkip] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadOffers = async (reset = false) => {
+    if (!reset && loadingMore) return;
+    if (!reset && !hasMore) return;
+    if (reset) {
+      setLoading(true);
+      setSkip(0);
+    } else {
+      setLoadingMore(true);
+    }
+    const newSkip = reset ? 0 : skip;
+    const data = await fetchWeeklyOffers(PAGE_SIZE, newSkip);
+    if (reset) {
+      setOffers(data);
+    } else {
+      setOffers(prev => [...prev, ...data]);
+    }
+    setHasMore(data.length === PAGE_SIZE);
+    setSkip(newSkip + PAGE_SIZE);
+    setLoading(false);
+    setLoadingMore(false);
+  };
 
   useEffect(() => {
-    const loadOffers = async () => {
-      try {
-        const data = await fetchWeeklyOffers();
-        setOffers(data);
-      } catch (error) {
-        console.error('Error al cargar ofertas:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadOffers();
+    loadOffers(true);
   }, []);
 
   const filteredOffers = offers.filter((item) =>
@@ -30,43 +46,56 @@ export default function AllOffersScreen() {
 
   const renderItem = ({ item }: { item: Product }) => (
     <SafeAreaView style={styles.card}>
-      <Image source={{ uri: item.image }} style={styles.image} />
-      <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
-      <Text style={styles.price}>${item.price.toFixed(2)}</Text>
+      <View style={styles.imageBox}>
+        <Image source={{ uri: item.thumbnail }} style={styles.image} />
+      </View>
+      <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">{item.title}</Text>
+      <View style={styles.priceRow}>
+        <Text style={styles.price}>${item.price.toFixed(2)}</Text>
+        <Text style={styles.discount}> -{item.discountPercentage}%</Text>
+      </View>
+      <Text style={styles.oldPrice}>Antes: ${(item.price / (1 - (item.discountPercentage || 0) / 100)).toFixed(2)}</Text>
+      <Text style={styles.brand}>{item.brand}</Text>
     </SafeAreaView>
   );
 
-
   return (
-      <SafeAreaView style={styles.container}>
-        <TouchableOpacity onPress={() => router.replace('/(tabs)')}>
-          <Text style={styles.backText}>← Volver</Text>
-        </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      <TouchableOpacity onPress={() => router.replace('/(tabs)')}>
+        <Text style={styles.backText}>← Volver</Text>
+      </TouchableOpacity>
 
-        <Text style={styles.header}>Todas las Ofertas</Text>
+      <Text style={styles.header}>Todas las Ofertas</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Buscar ofertas..."
-          value={searchQuery}
-          onChangeText={setSearchQuery}
+      <TextInput
+        style={styles.input}
+        placeholder="Buscar ofertas..."
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
+
+      {loading ? (
+        <ActivityIndicator size="large" color="#f57c00" style={{ marginTop: 40 }} />
+      ) : filteredOffers.length === 0 ? (
+        <Text style={styles.noResults}>No se encuentran resultados</Text>
+      ) : (
+        <FlatList
+          data={filteredOffers}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          contentContainerStyle={styles.list}
+          ListFooterComponent={
+            hasMore ? (
+              <TouchableOpacity style={styles.loadMoreBtn} onPress={() => loadOffers()} disabled={loadingMore}>
+                <Text style={styles.loadMoreText}>{loadingMore ? 'Cargando...' : 'Cargar más'}</Text>
+              </TouchableOpacity>
+            ) : null
+          }
         />
-
-        {loading ? (
-          <ActivityIndicator size="large" color="#f57c00" style={{ marginTop: 40 }} />
-        ) : filteredOffers.length === 0 ? (
-          <Text style={styles.noResults}>No se encuentran resultados</Text>
-        ) : (
-          <FlatList
-            data={filteredOffers}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderItem}
-            numColumns={2}
-            columnWrapperStyle={styles.row}
-            contentContainerStyle={styles.list}
-          />
-        )}
-      </SafeAreaView>
+      )}
+    </SafeAreaView>
   );
 }
 
@@ -74,7 +103,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 60,
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
     backgroundColor: '#fff',
   },
   backText: {
@@ -105,32 +134,95 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 12,
+    borderRadius: 18,
+    padding: 18,
+    marginBottom: 6,
     alignItems: 'center',
-    width: '48%',
-    elevation: 2,
+    width: '42%',
+    height: 220,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 2 },
+    borderWidth: 0,
+    marginHorizontal: 16,
   },
-  image: {
+  imageBox: {
+    backgroundColor: '#fafafa',
+    borderRadius: 14,
     width: 100,
     height: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 6,
+    shadowColor: '#000',
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 1 },
+  },
+  image: {
+    width: 70,
+    height: 70,
     resizeMode: 'contain',
-    marginBottom: 8,
+    borderRadius: 10,
+    backgroundColor: 'transparent',
   },
   title: {
-    fontSize: 14,
+    fontWeight: 'bold',
     textAlign: 'center',
+    marginBottom: 6,
+    fontSize: 15,
+    color: '#111',
+    lineHeight: 18,
+    maxWidth: 110,
+    maxHeight: 38,
+  },
+  priceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 2,
   },
   price: {
-    fontSize: 16,
+    color: '#2e7d32',
     fontWeight: 'bold',
-    color: '#f57c00',
+    fontSize: 18,
+  },
+  discount: {
+    color: '#e53935',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginLeft: 4,
+  },
+  oldPrice: {
+    color: '#bbb',
+    textDecorationLine: 'line-through',
+    fontSize: 14,
+    marginBottom: 2,
+  },
+  brand: {
+    color: '#888',
+    fontSize: 12,
     marginTop: 4,
+    fontStyle: 'normal',
+    textAlign: 'center',
   },
   noResults: {
     fontSize: 16,
     color: '#999',
     textAlign: 'center',
     marginTop: 40,
+  },
+  loadMoreBtn: {
+    backgroundColor: '#f57c00',
+    borderRadius: 8,
+    paddingVertical: 10,
+    marginVertical: 10,
+    alignItems: 'center',
+  },
+  loadMoreText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
