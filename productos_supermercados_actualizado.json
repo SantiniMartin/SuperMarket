@@ -65,7 +65,7 @@
           "stock": 85,
           "has_offer": true,
           "discount_percent": 18,
-          "category": "Lácteos",
+          "category": "Almacén",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/1998/1998592.png",
           "image_url": "aceite cocinero.jpg",
           "brand": "Cocinero"
@@ -91,7 +91,7 @@
           "stock": 98,
           "has_offer": true,
           "discount_percent": 17,
-          "category": "Higiene",
+          "category": "Bebidas",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/1905/1905083.png",
           "image_url": "cerveza quilmes.jpg",
           "brand": "Quilmes"
@@ -104,7 +104,7 @@
           "stock": 18,
           "has_offer": true,
           "discount_percent": 21,
-          "category": "Bebidas",
+          "category": "Limpieza",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/2917/2917999.png",
           "image_url": "lavandina con ayudin.jpg",
           "brand": "Ayudín"
@@ -117,7 +117,7 @@
           "stock": 86,
           "has_offer": false,
           "discount_percent": 0,
-          "category": "Higiene",
+          "category": "Almacén",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/1905/1905083.png",
           "image_url": "banana.jpg",
           "brand": "Ecuador"
@@ -130,7 +130,7 @@
           "stock": 35,
           "has_offer": true,
           "discount_percent": 16,
-          "category": "Bebidas",
+          "category": "Higiene",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/2917/2917999.png",
           "image_url": "shampoo sedal.webp",
           "brand": "Sedal"
@@ -143,7 +143,7 @@
           "stock": 35,
           "has_offer": false,
           "discount_percent": 0,
-          "category": "Higiene",
+          "category": "Almacén",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/1905/1905083.png",
           "image_url": "galletita bagley.webp",
           "brand": "Bagley"
@@ -156,7 +156,7 @@
           "stock": 64,
           "has_offer": true,
           "discount_percent": 27,
-          "category": "Limpieza",
+          "category": "Almacén",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/3075/3075977.png",
           "image_url": "manzana.jpg",
           "brand": "Patagonia"
@@ -169,7 +169,7 @@
           "stock": 39,
           "has_offer": true,
           "discount_percent": 24,
-          "category": "Limpieza",
+          "category": "Almacén",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/3075/3075977.png",
           "image_url": "cebolla.jpg",
           "brand": "La Huerta"
@@ -182,7 +182,7 @@
           "stock": 70,
           "has_offer": true,
           "discount_percent": 22,
-          "category": "Bebidas",
+          "category": "Almacén",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/2917/2917999.png",
           "image_url": "arveja arcor.jpeg",
           "brand": "Arcor"
@@ -195,7 +195,7 @@
           "stock": 26,
           "has_offer": false,
           "discount_percent": 0,
-          "category": "Panadería",
+          "category": "Bebidas",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/2880/2880310.png",
           "image_url": "gaseosa coca cola.jpg",
           "brand": "Gaseosa"
@@ -208,7 +208,7 @@
           "stock": 16,
           "has_offer": false,
           "discount_percent": 0,
-          "category": "Lácteos",
+          "category": "Limpieza",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/1998/1998592.png",
           "image_url": "detergente ala.jpg",
           "brand": "Ala"
@@ -234,7 +234,7 @@
           "stock": 98,
           "has_offer": false,
           "discount_percent": 0,
-          "category": "Limpieza",
+          "category": "Lácteos",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/3075/3075977.png",
           "image_url": "queso cremoso.jpg",
           "brand": "La Paulina"
@@ -247,7 +247,7 @@
           "stock": 65,
           "has_offer": false,
           "discount_percent": 0,
-          "category": "Panadería",
+          "category": "Higiene",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/2880/2880310.png",
           "image_url": "desodorante.webp",
           "brand": "Rexona"
@@ -260,7 +260,7 @@
           "stock": 61,
           "has_offer": true,
           "discount_percent": 7,
-          "category": "Lácteos",
+          "category": "Bebidas",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/1998/1998592.png",
           "image_url": "agua mineral.jpg",
           "brand": "Eco de los Andes"
@@ -273,7 +273,7 @@
           "stock": 55,
           "has_offer": true,
           "discount_percent": 11,
-          "category": "Almacén",
+          "category": "Lácteos",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/1046/1046765.png",
           "image_url": "manteca sancor.jpeg",
           "brand": "Sancor"
@@ -286,7 +286,7 @@
           "stock": 95,
           "has_offer": false,
           "discount_percent": 0,
-          "category": "Higiene",
+          "category": "Almacén",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/1905/1905083.png",
           "image_url": "lentejas.png",
           "brand": "Lucchetti"
@@ -299,7 +299,7 @@
           "stock": 85,
           "has_offer": true,
           "discount_percent": 5,
-          "category": "Lácteos",
+          "category": "Almacén",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/1998/1998592.png",
           "image_url": "sal dos anclas.webp",
           "brand": "Dos Anclas"
@@ -312,7 +312,7 @@
           "stock": 62,
           "has_offer": true,
           "discount_percent": 6,
-          "category": "Higiene",
+          "category": "Bebidas",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/1905/1905083.png",
           "image_url": "jugo en polvo.jpeg",
           "brand": "Tang"
@@ -325,7 +325,7 @@
           "stock": 72,
           "has_offer": true,
           "discount_percent": 27,
-          "category": "Almacén",
+          "category": "Higiene",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/1046/1046765.png",
           "image_url": "papel higienico.jpg",
           "brand": "Elite"
@@ -338,7 +338,7 @@
           "stock": 36,
           "has_offer": true,
           "discount_percent": 16,
-          "category": "Limpieza",
+          "category": "Almacén",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/3075/3075977.png",
           "image_url": "pechuga de polloo.png",
           "brand": "Granja Tres Arroyos"
@@ -351,7 +351,7 @@
           "stock": 22,
           "has_offer": true,
           "discount_percent": 10,
-          "category": "Bebidas",
+          "category": "Almacén",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/2917/2917999.png",
           "image_url": "carne.jpg",
           "brand": "Friar"
@@ -364,7 +364,7 @@
           "stock": 74,
           "has_offer": true,
           "discount_percent": 21,
-          "category": "Almacén",
+          "category": "Panadería",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/1046/1046765.png",
           "image_url": "pan bimbo.webp",
           "brand": "Bimbo"
@@ -377,7 +377,7 @@
           "stock": 21,
           "has_offer": false,
           "discount_percent": 0,
-          "category": "Higiene",
+          "category": "Almacén",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/1905/1905083.png",
           "image_url": "pure de tomate.jpg",
           "brand": "Arcor"
@@ -390,7 +390,7 @@
           "stock": 34,
           "has_offer": false,
           "discount_percent": 0,
-          "category": "Limpieza",
+          "category": "Higiene",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/3075/3075977.png",
           "image_url": "toallas femeninas.webp",
           "brand": "Always"
@@ -416,7 +416,7 @@
           "stock": 28,
           "has_offer": true,
           "discount_percent": 18,
-          "category": "Limpieza",
+          "category": "Almacén",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/3075/3075977.png",
           "image_url": "cacao nesquik.jpg",
           "brand": "Nesquik"
@@ -429,10 +429,10 @@
           "stock": 13,
           "has_offer": false,
           "discount_percent": 0,
-          "category": "Panadería",
+          "category": "Higiene",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/2880/2880310.png",
           "image_url": "jabon de tocador.jpg",
-          "brand": "Ala"
+          "brand": "Rexona"
         },
         {
           "id": "coto-0034",
@@ -442,7 +442,7 @@
           "stock": 73,
           "has_offer": true,
           "discount_percent": 14,
-          "category": "Panadería",
+          "category": "Almacén",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/2880/2880310.png",
           "image_url": "choclo en lata.jpg",
           "brand": "La Huerta"
@@ -455,7 +455,7 @@
           "stock": 98,
           "has_offer": false,
           "discount_percent": 0,
-          "category": "Panadería",
+          "category": "Lácteos",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/2880/2880310.png",
           "image_url": "leche sancor.jpg",
           "brand": "Sancor"
@@ -468,7 +468,7 @@
           "stock": 18,
           "has_offer": false,
           "discount_percent": 0,
-          "category": "Panadería",
+          "category": "Almacén",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/2880/2880310.png",
           "image_url": "azucar ledesma.jpg",
           "brand": "Ledesma"
@@ -494,7 +494,7 @@
           "stock": 69,
           "has_offer": false,
           "discount_percent": 0,
-          "category": "Limpieza",
+          "category": "Higiene",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/3075/3075977.png",
           "image_url": "pañales.webp",
           "brand": "Pampers"
@@ -507,7 +507,7 @@
           "stock": 70,
           "has_offer": false,
           "discount_percent": 0,
-          "category": "Bebidas",
+          "category": "Almacén",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/2917/2917999.png",
           "image_url": "yerba taragui.webp",
           "brand": "Taragüi"
@@ -520,7 +520,7 @@
           "stock": 42,
           "has_offer": false,
           "discount_percent": 0,
-          "category": "Lácteos",
+          "category": "Almacén",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/1998/1998592.png",
           "image_url": "mermelada.webp",
           "brand": "Arcor"
@@ -553,7 +553,7 @@
           "stock": 78,
           "has_offer": true,
           "discount_percent": 30,
-          "category": "Limpieza",
+          "category": "Higiene",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/3075/3075977.png",
           "image_url": "pañales.webp",
           "brand": "Pampers"
@@ -566,7 +566,7 @@
           "stock": 61,
           "has_offer": true,
           "discount_percent": 28,
-          "category": "Higiene",
+          "category": "Almacén",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/1905/1905083.png",
           "image_url": "cacao nesquik.jpg",
           "brand": "Nesquik"
