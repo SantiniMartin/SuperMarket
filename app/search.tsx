@@ -5,6 +5,7 @@ import { fetchProducts, fetchCategories } from '@/services/api';
 import { Product } from '@/services/productsService';
 import { Stack, useRouter } from 'expo-router';
 import { useFavorites } from '@/context/FavoritesContext';
+import ProductCard from '../components/ui/ProductCard';
 
 export default function SearchScreen() {
   const [search, setSearch] = useState('');
@@ -18,6 +19,7 @@ export default function SearchScreen() {
   const [sortOption, setSortOption] = useState('');
   const router = useRouter();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const [ratings, setRatings] = useState<{[id: string]: number}>({});
 
   // Animación de pop para el corazón
   const scaleAnim = useRef<{ [key: number]: Animated.Value }>({}).current;
@@ -74,40 +76,22 @@ export default function SearchScreen() {
     setFiltered(filteredList);
   }, [search, products, selectedCategory, sortOption]);
 
-  const renderProduct = ({ item }: { item: Product }) => {
-    if (!scaleAnim[item.id]) scaleAnim[item.id] = new Animated.Value(1);
-    return (
-      <View style={styles.card}>
-        <TouchableOpacity
-          style={styles.favoriteBtn}
-          onPress={() => handleFavorite(item)}
-        >
-          <Animated.View style={{ transform: [{ scale: scaleAnim[item.id] }] }}>
-            <Icon
-              name={isFavorite(item.id) ? 'heart' : 'heart-outline'}
-              size={20}
-              color={isFavorite(item.id) ? '#e53935' : '#e53935'}
-            />
-          </Animated.View>
-        </TouchableOpacity>
-        <View style={styles.imageBox}>
-          {item.thumbnail ? (
-            <Image source={{ uri: item.thumbnail }} style={{ width: 60, height: 60, resizeMode: 'contain', borderRadius: 10 }} />
-          ) : (
-            <Text style={{ color: '#bbb' }}>Img Product</Text>
-          )}
-        </View>
-        <Text style={styles.productName} numberOfLines={2}>{item.title}</Text>
-        <Text style={styles.storeName}>{item.brand}</Text>
-        <View style={styles.priceRow}>
-          <Text style={styles.price}>${item.price.toFixed(2)}</Text>
-          <TouchableOpacity style={styles.cartBtn}>
-            <Icon name="cart-outline" size={18} color="#2e7d32" />
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
+  const renderProduct = ({ item }: { item: Product }) => (
+    <ProductCard
+      name={item.title}
+      image={{ uri: item.thumbnail }}
+      categories={[item.category]}
+      discountPercent={item.discountPercentage}
+      price={item.price}
+      oldPrice={item.price / (1 - (item.discountPercentage || 0) / 100)}
+      brand={item.brand}
+      isFavorite={isFavorite(item.id)}
+      onToggleFavorite={() => handleFavorite(item)}
+      onAddToCart={() => {}}
+      rating={ratings[item.id] || 0}
+      onRate={(r) => setRatings({...ratings, [item.id]: r})}
+    />
+  );
 
   return (
     <>

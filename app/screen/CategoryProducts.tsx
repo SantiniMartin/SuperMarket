@@ -4,6 +4,7 @@ import { Stack, useLocalSearchParams, router } from 'expo-router';
 import { fetchProductsByCategory } from '@/services/api';
 import { useFavorites } from '@/context/FavoritesContext';
 import Icon from 'react-native-vector-icons/Ionicons';
+import ProductCard from '../../components/ui/ProductCard';
 
 const PAGE_SIZE = 10;
 
@@ -15,6 +16,7 @@ export default function CategoryProducts() {
   const [skip, setSkip] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const [ratings, setRatings] = useState<{[id: string]: number}>({});
 
   const loadProducts = async (reset = false) => {
     if (!category) return;
@@ -62,26 +64,20 @@ export default function CategoryProducts() {
   }
 
   const renderProduct = ({ item }: { item: any }) => (
-    <View style={styles.card}>
-      <TouchableOpacity
-        style={styles.favoriteBtn}
-        onPress={() => isFavorite(item.id) ? removeFavorite(item.id) : addFavorite(item)}
-      >
-        <Icon
-          name={isFavorite(item.id) ? 'heart' : 'heart-outline'}
-          size={20}
-          color={isFavorite(item.id) ? '#e53935' : '#e53935'}
-        />
-      </TouchableOpacity>
-      <Image source={{ uri: item.thumbnail }} style={styles.image} />
-      <Text numberOfLines={2} style={styles.title}>{item.title}</Text>
-      <Text style={styles.price}>${item.price} <Text style={styles.discount}>-{item.discountPercentage}%</Text></Text>
-      <Text style={styles.oldPrice}>Antes: ${ (item.price / (1 - item.discountPercentage / 100)).toFixed(2) }</Text>
-      <Text style={styles.brand}>{item.brand}</Text>
-      <TouchableOpacity style={styles.cartBtn}>
-        <Icon name="cart-outline" size={20} color="#2e7d32" />
-      </TouchableOpacity>
-    </View>
+    <ProductCard
+      name={item.title}
+      image={{ uri: item.thumbnail }}
+      categories={[item.category]}
+      discountPercent={item.discountPercentage}
+      price={item.price}
+      oldPrice={item.price / (1 - (item.discountPercentage || 0) / 100)}
+      brand={item.brand}
+      isFavorite={isFavorite(item.id)}
+      onToggleFavorite={() => isFavorite(item.id) ? removeFavorite(item.id) : addFavorite(item)}
+      onAddToCart={() => {}}
+      rating={ratings[item.id] || 0}
+      onRate={(r) => setRatings({...ratings, [item.id]: r})}
+    />
   );
 
   return (
