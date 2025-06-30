@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const [showPassword, setShowPassword] = useState(false);
   const handleLogin = () => {
     // Hardcoded user for demonstration
     if (email.toLowerCase() === 'prueba@gmail.com' && password === 'admin123') {
@@ -42,8 +42,11 @@ const LoginScreen = () => {
           placeholder="Password"
           value={password}
           onChangeText={setPassword}
-          secureTextEntry
+          secureTextEntry={!showPassword}
         />
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+          <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={24} color="#888" style={styles.inputIcon} />
+        </TouchableOpacity>
       </View>
 
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>

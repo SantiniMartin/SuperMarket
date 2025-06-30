@@ -7,7 +7,6 @@ const RegisterScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const handleRegister = () => {
     if (!name || !email || !password) {
       Alert.alert('Error', 'Please fill in all fields.');
