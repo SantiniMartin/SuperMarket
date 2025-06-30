@@ -1,224 +1,155 @@
-// app/(auth)/register.tsx
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
-import { Link } from 'expo-router';
 import React, { useState } from 'react';
-import { Colors } from '@/constants/Colors';
-import { useAuth } from '@/context/AuthContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
+import { Link, router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
-export default function RegisterScreen() {
-  const { login, updateProfile } = useAuth();
+const RegisterScreen = () => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [repeatPassword, setRepeatPassword] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [errors, setErrors] = useState<any>({});
-  const [modalVisible, setModalVisible] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
-  const validate = () => {
-    const newErrors: any = {};
-    if (!firstName) newErrors.firstName = 'El nombre es obligatorio';
-    if (!lastName) newErrors.lastName = 'El apellido es obligatorio';
-    if (!email) newErrors.email = 'El correo es obligatorio';
-    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) newErrors.email = 'Correo inválido';
-    if (!password) newErrors.password = 'La contraseña es obligatoria';
-    else if (password.length < 6) newErrors.password = 'Mínimo 6 caracteres';
-    if (!repeatPassword) newErrors.repeatPassword = 'Repite la contraseña';
-    else if (password !== repeatPassword) newErrors.repeatPassword = 'Las contraseñas no coinciden';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleRegister = async () => {
-    if (!validate()) return;
-    // Soporte multiusuario: guarda en array
-    const newUser = {
-      name: `${firstName} ${lastName}`,
-      lastName,
-      email,
-      avatar: '',
-      username: '',
-      password,
-    };
-    let usersArr = [];
-    const usersRaw = await AsyncStorage.getItem('users');
-    if (usersRaw) usersArr = JSON.parse(usersRaw);
-    if (usersArr.find((u: any) => u.email === email)) {
-      setErrors({ email: 'Ya existe un usuario con ese correo' });
+  const handleRegister = () => {
+    if (!name || !email || !password) {
+      Alert.alert('Error', 'Please fill in all fields.');
       return;
     }
-    usersArr.push(newUser);
-    await AsyncStorage.setItem('users', JSON.stringify(usersArr));
-    // Guarda el usuario logueado actual
-    await AsyncStorage.setItem('userProfile', JSON.stringify(newUser));
-    await AsyncStorage.setItem('userToken', 'dummy-token');
-    await login(email, password, firstName, lastName);
-    await updateProfile({ name: firstName, lastName, email });
-    setModalVisible(true);
-    setTimeout(() => {
-      setModalVisible(false);
-    }, 1500);
+    // In a real app, you'd handle registration here
+    Alert.alert(
+      'Success',
+      'Registration successful! You can now log in.',
+      [{ text: 'OK', onPress: () => router.push('/login') }]
+    );
   };
 
   return (
     <View style={styles.container}>
-      <Modal visible={modalVisible} transparent animationType="fade">
-        <View style={{ flex:1, justifyContent:'center', alignItems:'center', backgroundColor:'rgba(0,0,0,0.2)' }}>
-          <View style={{ backgroundColor:'#fff', borderRadius:16, padding:32, alignItems:'center' }}>
-            <Text style={{ fontWeight:'bold', fontSize:18, marginBottom:10 }}>¡Usuario creado!</Text>
-            <Text style={{ color:'#555', fontSize:15 }}>Tu cuenta fue registrada correctamente.</Text>
-          </View>
-        </View>
-      </Modal>
-      <>
-        <Text style={styles.title}>Registrarse</Text>
+      <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
+      <Text style={styles.title}>Crea una cuenta</Text>
+      <Text style={styles.subtitle}>Registrate para ocupar la app</Text>
+
+      <View style={styles.inputContainer}>
+        <Ionicons name="person-outline" size={24} color="#888" style={styles.inputIcon} />
         <TextInput
           style={styles.input}
-          placeholder="Nombre"
-          value={firstName}
-          onChangeText={setFirstName}
-          placeholderTextColor="#888"
+          placeholder="Nombre Completo"
+          value={name}
+          onChangeText={setName}
+          autoCapitalize="words"
         />
-        {errors.firstName && <Text style={styles.error}>{errors.firstName}</Text>}
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Ionicons name="mail-outline" size={24} color="#888" style={styles.inputIcon} />
         <TextInput
           style={styles.input}
-          placeholder="Apellido"
-          value={lastName}
-          onChangeText={setLastName}
-          placeholderTextColor="#888"
-        />
-        {errors.lastName && <Text style={styles.error}>{errors.lastName}</Text>}
-        <TextInput
-          style={styles.input}
-          placeholder="Correo electrónico"
+          placeholder="Email"
           value={email}
           onChangeText={setEmail}
+          keyboardType="email-address"
           autoCapitalize="none"
-          placeholderTextColor="#888"
         />
-        {errors.email && <Text style={styles.error}>{errors.email}</Text>}
-        <View style={{ width: '100%', position: 'relative', marginBottom: 14 }}>
-          <TextInput
-            style={[styles.input, { marginBottom: 0 }]}
-            placeholder="Contraseña"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={!showPassword}
-            placeholderTextColor="#888"
-          />
-          <TouchableOpacity style={styles.eyeIconAbsolute} onPress={() => setShowPassword(v => !v)}>
-            <Icon name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={22} color="#888" />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Ionicons name="lock-closed-outline" size={24} color="#888" style={styles.inputIcon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+      </View>
+
+      <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+        <Text style={styles.registerButtonText}>Registrate</Text>
+      </TouchableOpacity>
+
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>Ya tienes una cuenta?</Text>
+        <Link href="/login" asChild>
+          <TouchableOpacity>
+            <Text style={styles.signInText}> Inicia Sesión</Text>
           </TouchableOpacity>
-        </View>
-        {errors.password && <Text style={styles.error}>{errors.password}</Text>}
-        <View style={{ width: '100%', position: 'relative', marginBottom: 14 }}>
-          <TextInput
-            style={[styles.input, { marginBottom: 0 }]}
-            placeholder="Repetir contraseña"
-            value={repeatPassword}
-            onChangeText={setRepeatPassword}
-            secureTextEntry={!showRepeatPassword}
-            placeholderTextColor="#888"
-          />
-          <TouchableOpacity style={styles.eyeIconAbsolute} onPress={() => setShowRepeatPassword(v => !v)}>
-            <Icon name={showRepeatPassword ? 'eye-off-outline' : 'eye-outline'} size={22} color="#888" />
-          </TouchableOpacity>
-        </View>
-        {errors.repeatPassword && <Text style={styles.error}>{errors.repeatPassword}</Text>}
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>CREAR CUENTA</Text>
-        </TouchableOpacity>
-        <Link href="/login" style={styles.link}>
-          ¿Ya tenés cuenta? Iniciá sesión
         </Link>
-      </>
+      </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f6fa',
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
+    backgroundColor: '#f5f5f5',
   },
-  formBox: {
-    width: '100%',
-    maxWidth: 350,
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    padding: 28,
-    shadowColor: '#000',
-    shadowOpacity: 0.10,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 6,
-    alignItems: 'center',
+  logo: {
+    width: 200,
+    height: 200,
+    alignSelf: 'center',
+    marginBottom: 30,
   },
   title: {
-    fontSize: 28,
-    marginBottom: 24,
-    textAlign: 'center',
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#222',
-    letterSpacing: 0.5,
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 40,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    marginBottom: 20,
+    paddingHorizontal: 15,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+  },
+  inputIcon: {
+    marginRight: 10,
   },
   input: {
-    width: '100%',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    padding: 12,
-    marginBottom: 14,
-    borderRadius: 10,
-    backgroundColor: '#fafbfc',
+    flex: 1,
+    height: 50,
     fontSize: 16,
-    color: '#222',
   },
-  button: {
-    width: '100%',
-    backgroundColor: Colors.buttons.green,
-    paddingVertical: 14,
+  registerButton: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 4,
-    shadowColor: '#2e7d32',
-    shadowOpacity: 0.12,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
+    marginTop: 20,
   },
-  buttonText: {
+  registerButtonText: {
     color: '#fff',
+    fontSize: 18,
     fontWeight: 'bold',
-    fontSize: 16,
-    letterSpacing: 1,
   },
-  link: {
-    color: Colors.buttons.blue,
-    marginTop: 18,
-    textAlign: 'center',
-    fontWeight: '500',
-    fontSize: 15,
-  },
-  error: {
-    color: '#e53935',
-    fontSize: 13,
-    marginBottom: 6,
-    marginLeft: 2,
-    alignSelf: 'flex-start',
-  },
-  eyeIconAbsolute: {
-    position: 'absolute',
-    right: 16,
-    top: 0,
-    height: '100%',
+  footer: {
+    flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 2,
+    marginTop: 30,
+  },
+  footerText: {
+    fontSize: 16,
+    color: '#666',
+  },
+  signInText: {
+    fontSize: 16,
+    color: '#4CAF50',
+    fontWeight: 'bold',
   },
 });
+
+export default RegisterScreen;

@@ -1,5 +1,4 @@
 import { StatusBar } from "expo-status-bar";
-
 import React from "react";
 import {
   View,
@@ -14,19 +13,19 @@ import { Card, Button, Icon } from "@rneui/themed";
 const users = [
   {
     name: "brynn",
-    avatar:
-      "https://images-na.ssl-images-amazon.com/images/M/MV5BMTgxMTc1MTYzM15BMl5BanBnXkFtZTgwNzI5NjMwOTE@._V1_UY256_CR16,0,172,256_AL_.jpg",
+    avatar: require("../../assets/images/products/carne.jpg"),
   },
-
   {
     name: "andy vitale",
-    avatar:
-      "https://images-na.ssl-images-amazon.com/images/M/MV5BMTgxMTc1MTYzM15BMl5BanBnXkFtZTgwNzI5NjMwOTE@._V1_UY256_CR16,0,172,256_AL_.jpg",
+    avatar: {
+      uri: "https://images-na.ssl-images-amazon.com/images/M/MV5BMTgxMTc1MTYzM15BMl5BanBnXkFtZTgwNzI5NjMwOTE@._V1_UY256_CR16,0,172,256_AL_.jpg",
+    },
   },
   {
     name: "katy friedson",
-    avatar:
-      "https://images-na.ssl-images-amazon.com/images/M/MV5BMTgxMTc1MTYzM15BMl5BanBnXkFtZTgwNzI5NjMwOTE@._V1_UY256_CR16,0,172,256_AL_.jpg",
+    avatar: {
+      uri: "https://images-na.ssl-images-amazon.com/images/M/MV5BMTgxMTc1MTYzM15BMl5BanBnXkFtZTgwNzI5NjMwOTE@._V1_UY256_CR16,0,172,256_AL_.jpg",
+    },
   },
 ];
 
@@ -50,7 +49,7 @@ const Store = () => {
                   <Image
                     style={styles.image}
                     resizeMode="cover"
-                    source={{ uri: i.avatar }}
+                    source={i.avatar}
                   />
                   <Text>{i.name}</Text>
                 </View>
