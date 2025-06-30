@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
-import { Link, router } from 'expo-router';
+import { Link } from 'expo-router';
+import { useAuth } from '../../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const handleLogin = () => {
-    // Hardcoded user for demonstration
-    if (email.toLowerCase() === 'prueba@gmail.com' && password === 'admin123') {
-      // Navigate to the main app screen
-      router.replace('/(tabs)');
-    } else {
-      Alert.alert('Error', 'Invalid email or password.');
+  const { login } = useAuth();
+
+  const handleLogin = async () => {
+    try {
+      await login(email.toLowerCase(), password);
+      // La navegación se gestionará automáticamente por el AuthProvider
+    } catch (error: any) {
+      Alert.alert('Error de inicio de sesión', error.message || 'Credenciales inválidas.');
     }
   };
 

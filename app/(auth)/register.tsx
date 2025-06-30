@@ -1,23 +1,27 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 import { Link, router } from 'expo-router';
+import { useAuth } from '../../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 
 const RegisterScreen = () => {
-  const [name, setName] = useState('');
+    const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const handleRegister = () => {
+  const { register } = useAuth();
+    const handleRegister = async () => {
     if (!name || !email || !password) {
-      Alert.alert('Error', 'Please fill in all fields.');
+      Alert.alert('Error', 'Por favor, completa todos los campos.');
       return;
     }
-    // In a real app, you'd handle registration here
-    Alert.alert(
-      'Success',
-      'Registration successful! You can now log in.',
-      [{ text: 'OK', onPress: () => router.push('/login') }]
-    );
+    try {
+      await register(name, email.toLowerCase(), password);
+      Alert.alert('Éxito', 'Cuenta creada con éxito.', [
+        { text: 'OK', onPress: () => router.push('/login') },
+      ]);
+    } catch (error: any) {
+      Alert.alert('Error de registro', error.message || 'No se pudo crear la cuenta.');
+    }
   };
 
   return (
