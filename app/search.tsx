@@ -5,6 +5,7 @@ import { fetchProducts, fetchCategories } from '@/services/api';
 import { Product } from '@/services/productsService';
 import { Stack, useRouter } from 'expo-router';
 import { useFavorites } from '@/context/FavoritesContext';
+import { useCart } from '@/context/CartContext';
 
 export default function SearchScreen() {
   const [search, setSearch] = useState('');
@@ -18,6 +19,7 @@ export default function SearchScreen() {
   const [sortOption, setSortOption] = useState('');
   const router = useRouter();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const { addToCart, removeFromCart, isInCart } = useCart();
 
   // Animación de pop para el corazón
   const scaleAnim = useRef<{ [key: number]: Animated.Value }>({}).current;
@@ -101,8 +103,15 @@ export default function SearchScreen() {
         <Text style={styles.storeName}>{item.brand}</Text>
         <View style={styles.priceRow}>
           <Text style={styles.price}>${item.price.toFixed(2)}</Text>
-          <TouchableOpacity style={styles.cartBtn}>
-            <Icon name="cart-outline" size={18} color="#2e7d32" />
+          <TouchableOpacity 
+            style={styles.cartBtn}
+            onPress={() => isInCart(item.id) ? removeFromCart(item.id) : addToCart(item, 1)}
+          >
+            <Icon 
+              name={isInCart(item.id) ? 'cart' : 'cart-outline'} 
+              size={18} 
+              color={isInCart(item.id) ? '#2e7d32' : '#2e7d32'} 
+            />
           </TouchableOpacity>
         </View>
       </View>
