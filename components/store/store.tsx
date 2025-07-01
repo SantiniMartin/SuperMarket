@@ -1,4 +1,5 @@
 import { StatusBar } from "expo-status-bar";
+import { SearchBar } from "react-native-elements";
 
 import React from "react";
 import {
@@ -14,19 +15,16 @@ import { Card, Button, Icon } from "@rneui/themed";
 const users = [
   {
     name: "brynn",
-    avatar:
-      "https://images-na.ssl-images-amazon.com/images/M/MV5BMTgxMTc1MTYzM15BMl5BanBnXkFtZTgwNzI5NjMwOTE@._V1_UY256_CR16,0,172,256_AL_.jpg",
-  },
 
+    avatar: require("../../assets/images/products/carne.jpg"),
+  },
   {
     name: "andy vitale",
-    avatar:
-      "https://images-na.ssl-images-amazon.com/images/M/MV5BMTgxMTc1MTYzM15BMl5BanBnXkFtZTgwNzI5NjMwOTE@._V1_UY256_CR16,0,172,256_AL_.jpg",
+    avatar: require("../../assets/images/products/cebolla.jpg"),
   },
   {
     name: "katy friedson",
-    avatar:
-      "https://images-na.ssl-images-amazon.com/images/M/MV5BMTgxMTc1MTYzM15BMl5BanBnXkFtZTgwNzI5NjMwOTE@._V1_UY256_CR16,0,172,256_AL_.jpg",
+    avatar: require("../../assets/images/products/banana.jpg"),
   },
 ];
 
@@ -35,14 +33,17 @@ const Store = () => {
     <ScrollView>
       <SafeAreaView style={styles.container}>
         <View style={styles.view}>
-          <Text style={styles.text}>Pagina de Tienda</Text>
-          <SafeAreaView style={styles.container}>
-            <Button>Primary</Button>
-            <Button>Primary</Button>
-          </SafeAreaView>
+          <Text style={styles.text}>TIENDA</Text>
+          <SearchBar
+            platform="default"
+            placeholder="Search Here..."
+            lightTheme={true}
+            round={true}
+          />
+          <SafeAreaView style={styles.container}></SafeAreaView>
           <StatusBar style="auto" />
           <Card>
-            <Card.Title>HELLO WORLD</Card.Title>
+            <Card.Title>Productos</Card.Title>
             <Card.Divider />
             {users.map((i, a) => {
               return (
@@ -50,38 +51,28 @@ const Store = () => {
                   <Image
                     style={styles.image}
                     resizeMode="cover"
-                    source={{ uri: i.avatar }}
+                    source={i.avatar}
                   />
                   <Text>{i.name}</Text>
+                  <Button
+                    icon={
+                      <Icon
+                        name="code"
+                        color="#ffffff"
+                        iconStyle={{ marginRight: 10 }}
+                      />
+                    }
+                    buttonStyle={{
+                      borderRadius: 0,
+                      marginLeft: 0,
+                      marginRight: 0,
+                      marginBottom: 0,
+                    }}
+                    title="VIEW NOW"
+                  />
                 </View>
               );
             })}
-            <Card.Image
-              style={{ padding: 0 }}
-              source={{
-                uri: "https://awildgeographer.files.wordpress.com/2015/02/john_muir_glacier.jpg",
-              }}
-            />
-            <Text style={{ marginBottom: 10 }}>
-              The idea with React Native Elements is more about component
-              structure than actual design.
-            </Text>
-            <Button
-              icon={
-                <Icon
-                  name="code"
-                  color="#ffffff"
-                  iconStyle={{ marginRight: 10 }}
-                />
-              }
-              buttonStyle={{
-                borderRadius: 0,
-                marginLeft: 0,
-                marginRight: 0,
-                marginBottom: 0,
-              }}
-              title="VIEW NOW"
-            />
           </Card>
         </View>
       </SafeAreaView>

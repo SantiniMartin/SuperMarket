@@ -8,6 +8,7 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { FavoritesProvider } from '@/context/FavoritesContext';
+import { CartProvider } from '@/context/CartContext';
 import { ThemeProviderCustom, useThemeCustom } from '@/context/ThemeContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -57,8 +58,10 @@ function ThemedRoot() {
     <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
       <AuthProvider>
         <FavoritesProvider>
-          <RootLayoutNav />
-          <StatusBar style="auto"/>
+          <CartProvider>
+            <RootLayoutNav />
+            <StatusBar style="auto"/>
+          </CartProvider>
         </FavoritesProvider>
       </AuthProvider>
     </ThemeProvider>

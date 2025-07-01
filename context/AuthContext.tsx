@@ -13,6 +13,7 @@ type AuthContextType = {
   isAuthenticated: boolean;
   user: User | null;
   login: (email: string, password: string, firstName?: string, lastName?: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   updateProfile: (data: Partial<User>) => Promise<void>;
 };
@@ -36,6 +37,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (userData) setUser(JSON.parse(userData));
     } catch (error) {
       console.error('Error checking auth status:', error);
+    }
+  };
+
+  const register = async (name: string, email: string, password: string) => {
+    try {
+      const usersRaw = await AsyncStorage.getItem('users');
+      const usersArr = usersRaw ? JSON.parse(usersRaw) : [];
+
+      const existingUser = usersArr.find((u: any) => u.email === email);
+      if (existingUser) {
+        throw new Error('El correo electrónico ya está registrado.');
+      }
+
+      const nameParts = name.split(' ');
+      const newUser = {
+        name: nameParts[0],
+        lastName: nameParts.slice(1).join(' '),
+        email,
+        password, // En una app real, esto debería estar hasheado
+      };
+
+      usersArr.push(newUser);
+      await AsyncStorage.setItem('users', JSON.stringify(usersArr));
+    } catch (error) {
+      console.error('Error during registration:', error);
+      throw error;
     }
   };
 
@@ -91,7 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, updateProfile }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, updateProfile, register }}>
       {children}
     </AuthContext.Provider>
   );
