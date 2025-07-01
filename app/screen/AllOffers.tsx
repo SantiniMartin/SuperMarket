@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter, Stack } from 'expo-router';
 import { Product, fetchWeeklyOffers } from '@/services/productsService';
 import { useFavorites } from '@/context/FavoritesContext';
+import { useCart } from '@/context/CartContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 import productosData from '../../productos_supermercados_actualizado.json';
 import ProductCard from '../../components/ui/ProductCard';
@@ -72,7 +73,7 @@ export default function AllOffersScreen() {
   const [skip, setSkip] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
-  const [ratings, setRatings] = useState<{[id: string]: number}>({});
+  const { addToCart, removeFromCart, isInCart } = useCart();
 
   const loadOffers = async (reset = false) => {
     if (!reset && loadingMore) return;
@@ -107,20 +108,39 @@ export default function AllOffersScreen() {
   );
 
   const renderItem = ({ item }: { item: any }) => (
-    <ProductCard
-      name={item.name}
-      image={getProductImageSource(item.image_url, item['category_image_url'] ?? '')}
-      categories={[item.category]}
-      discountPercent={item.discount_percent}
-      price={item.price}
-      oldPrice={item.price / (1 - (item.discount_percent || 0) / 100)}
-      brand={item.brand}
-      isFavorite={isFavorite(item.id)}
-      onToggleFavorite={() => isFavorite(item.id) ? removeFavorite(item.id) : addFavorite(item)}
-      onAddToCart={() => {}}
-      rating={ratings[item.id] || 0}
-      onRate={(r) => setRatings({...ratings, [item.id]: r})}
-    />
+    <SafeAreaView style={styles.card}>
+      <TouchableOpacity
+        style={styles.favoriteBtn}
+        onPress={() => isFavorite(item.id) ? removeFavorite(item.id) : addFavorite(item)}
+      >
+        <Icon
+          name={isFavorite(item.id) ? 'heart' : 'heart-outline'}
+          size={20}
+          color={isFavorite(item.id) ? '#e53935' : '#e53935'}
+        />
+      </TouchableOpacity>
+      <View style={styles.imageBox}>
+        <Image source={getProductImageSource(item.image_url, item['category_image_url'] ?? '')} style={styles.image} />
+      </View>
+      <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">{item.name}</Text>
+      <View style={styles.priceRow}>
+        <Text style={styles.price}>${item.price.toFixed(2)}</Text>
+        <Text style={styles.discount}> -{item.discount_percent}%</Text>
+      </View>
+      <Text style={styles.oldPrice}>Antes: ${(item.price / (1 - (item.discount_percent || 0) / 100)).toFixed(2)}</Text>
+      <Text style={styles.brand}>{item.brand || item.supermarket}</Text>
+      <Text style={[styles.brand, { fontSize: 12, color: '#aaa' }]}>{item.supermarket_name || item.supermarket}</Text>
+      <TouchableOpacity 
+        style={styles.cartBtn}
+        onPress={() => isInCart(item.id) ? removeFromCart(item.id) : addToCart(item, 1)}
+      >
+        <Icon 
+          name={isInCart(item.id) ? 'cart' : 'cart-outline'} 
+          size={20} 
+          color={isInCart(item.id) ? '#2e7d32' : '#2e7d32'} 
+        />
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 
   return (
