@@ -3,6 +3,7 @@ import { View, Text, Image, FlatList, StyleSheet, ActivityIndicator, TouchableOp
 import { fetchWeeklyOffers, fetchDailyOffers, Product } from '@/services/productsService';
 import { useRouter } from 'expo-router';
 import { useFavorites } from '@/context/FavoritesContext';
+import { useCart } from '@/context/CartContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 import productosData from '../productos_supermercados_actualizado.json';
 
@@ -64,6 +65,7 @@ const WeeklyOffers = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const { addToCart, removeFromCart, isInCart } = useCart();
 
   useEffect(() => {
     // Tomar productos con oferta del JSON local
@@ -115,8 +117,8 @@ const WeeklyOffers = () => {
             <Text style={styles.brand}>{item.brand || ''}</Text>
             <Text style={[styles.brand, { fontSize: 12, color: '#aaa' }]}>{item.category || ''}</Text>
             <Text style={[styles.brand, { fontSize: 12, color: '#aaa' }]}>{item['supermarket_name'] || item['supermarket'] || ''}</Text>
-            <TouchableOpacity style={styles.cartBtn}>
-              <Icon name="cart-outline" size={20} color="#2e7d32" />
+            <TouchableOpacity style={styles.cartBtn} onPress={() => isInCart(item.id) ? removeFromCart(item.id) : addToCart(item, 1)}>
+              <Icon name={isInCart(item.id) ? 'cart' : 'cart-outline'} size={20} color={isInCart(item.id) ? '#2e7d32' : '#2e7d32'} />
             </TouchableOpacity>
           </View>
         )}
@@ -130,6 +132,7 @@ export const DailyOffers = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const { addToCart, removeFromCart, isInCart } = useCart();
 
   useEffect(() => {
     const loadOffers = async () => {
@@ -181,8 +184,8 @@ export const DailyOffers = () => {
             <Text style={styles.brand}>{item.brand || ''}</Text>
             <Text style={[styles.brand, { fontSize: 12, color: '#aaa' }]}>{item.category || ''}</Text>
             <Text style={[styles.brand, { fontSize: 12, color: '#aaa' }]}>{item['supermarket_name'] || item['supermarket'] || ''}</Text>
-            <TouchableOpacity style={styles.cartBtn}>
-              <Icon name="cart-outline" size={20} color="#2e7d32" />
+            <TouchableOpacity style={styles.cartBtn} onPress={() => isInCart(item.id) ? removeFromCart(item.id) : addToCart(item, 1)}>
+              <Icon name={isInCart(item.id) ? 'cart' : 'cart-outline'} size={20} color={isInCart(item.id) ? '#2e7d32' : '#2e7d32'} />
             </TouchableOpacity>
           </View>
         )}
