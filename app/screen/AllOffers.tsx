@@ -3,8 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { useRouter, Stack } from 'expo-router';
 import { Product, fetchWeeklyOffers } from '@/services/productsService';
 import { useFavorites } from '@/context/FavoritesContext';
+import { useCart } from '@/context/CartContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 import productosData from '../../productos_supermercados_actualizado.json';
+import ProductCard from '../../components/ui/ProductCard';
 
 const PAGE_SIZE = 20;
 
@@ -49,6 +51,7 @@ const productImages: { [key: string]: any } = {
   'jugo en polvo.jpeg': require('../../assets/images/products/jugo en polvo.jpeg'),
   'choclo en lata.jpg': require('../../assets/images/products/choclo en lata.jpg'),
   'jabon de tocador.jpg': require('../../assets/images/products/jabon de tocador.jpg'),
+  'tomate redondo.jpg': require('../../assets/images/products/tomate redondo.jpg'),
 };
 
 function getProductImageSource(image_url: string, category_image_url: string) {
@@ -70,6 +73,7 @@ export default function AllOffersScreen() {
   const [skip, setSkip] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const { addToCart, removeFromCart, isInCart } = useCart();
 
   const loadOffers = async (reset = false) => {
     if (!reset && loadingMore) return;
@@ -126,8 +130,15 @@ export default function AllOffersScreen() {
       <Text style={styles.oldPrice}>Antes: ${(item.price / (1 - (item.discount_percent || 0) / 100)).toFixed(2)}</Text>
       <Text style={styles.brand}>{item.brand || item.supermarket}</Text>
       <Text style={[styles.brand, { fontSize: 12, color: '#aaa' }]}>{item.supermarket_name || item.supermarket}</Text>
-      <TouchableOpacity style={styles.cartBtn}>
-        <Icon name="cart-outline" size={20} color="#2e7d32" />
+      <TouchableOpacity 
+        style={styles.cartBtn}
+        onPress={() => isInCart(item.id) ? removeFromCart(item.id) : addToCart(item, 1)}
+      >
+        <Icon 
+          name={isInCart(item.id) ? 'cart' : 'cart-outline'} 
+          size={20} 
+          color={isInCart(item.id) ? '#2e7d32' : '#2e7d32'} 
+        />
       </TouchableOpacity>
     </SafeAreaView>
   );

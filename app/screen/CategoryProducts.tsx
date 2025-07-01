@@ -3,7 +3,9 @@ import { View, Text, FlatList, Image, ActivityIndicator, StyleSheet, TouchableOp
 import { Stack, useLocalSearchParams, router } from 'expo-router';
 import { fetchProductsByCategory } from '@/services/api';
 import { useFavorites } from '@/context/FavoritesContext';
+import { useCart } from '@/context/CartContext';
 import Icon from 'react-native-vector-icons/Ionicons';
+import ProductCard from '../../components/ui/ProductCard';
 
 const PAGE_SIZE = 10;
 
@@ -15,6 +17,7 @@ export default function CategoryProducts() {
   const [skip, setSkip] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const { addToCart, removeFromCart, isInCart } = useCart();
 
   const loadProducts = async (reset = false) => {
     if (!category) return;
@@ -78,8 +81,15 @@ export default function CategoryProducts() {
       <Text style={styles.price}>${item.price} <Text style={styles.discount}>-{item.discountPercentage}%</Text></Text>
       <Text style={styles.oldPrice}>Antes: ${ (item.price / (1 - item.discountPercentage / 100)).toFixed(2) }</Text>
       <Text style={styles.brand}>{item.brand}</Text>
-      <TouchableOpacity style={styles.cartBtn}>
-        <Icon name="cart-outline" size={20} color="#2e7d32" />
+      <TouchableOpacity 
+        style={styles.cartBtn}
+        onPress={() => isInCart(item.id) ? removeFromCart(item.id) : addToCart(item, 1)}
+      >
+        <Icon 
+          name={isInCart(item.id) ? 'cart' : 'cart-outline'} 
+          size={20} 
+          color={isInCart(item.id) ? '#2e7d32' : '#2e7d32'} 
+        />
       </TouchableOpacity>
     </View>
   );

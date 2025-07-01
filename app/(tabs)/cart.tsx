@@ -12,8 +12,10 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useCart } from '@/context/CartContext';
+import { useRouter } from 'expo-router';
 
 export default function CartScreen() {
+  const router = useRouter();
   const { 
     cartItems, 
     removeFromCart, 
@@ -29,20 +31,8 @@ export default function CartScreen() {
       return;
     }
     
-    Alert.alert(
-      'Confirmar compra',
-      `Total: $${getTotalPrice().toFixed(2)}\nProductos: ${getTotalItems()}`,
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        { 
-          text: 'Confirmar', 
-          onPress: () => {
-            Alert.alert('¡Compra exitosa!', 'Gracias por tu compra');
-            clearCart();
-          }
-        }
-      ]
-    );
+    // Navegar a la pantalla de checkout
+    router.push('../screen/CheckoutScreen');
   };
 
   const handleClearCart = () => {

@@ -72,6 +72,7 @@ function ThemedRoot() {
           </CartProvider>
         </FavoritesProvider>
       </AuthProvider>
+      <StatusBar style="auto" />
     </ThemeProvider>
   );
 }
