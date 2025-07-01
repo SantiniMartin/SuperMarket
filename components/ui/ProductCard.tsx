@@ -13,10 +13,10 @@ interface ProductCardProps {
   isFavorite: boolean;
   onToggleFavorite: () => void;
   onAddToCart: () => void;
-  isInCart: boolean;
   rating: number;
   onRate: (rating: number) => void;
   compact?: boolean;
+  cartAdded?: boolean;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -30,10 +30,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   isFavorite,
   onToggleFavorite,
   onAddToCart,
-  isInCart,
   rating,
   onRate,
   compact = false,
+  cartAdded = false,
 }) => {
   if (compact) {
     return (
@@ -43,8 +43,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </View>
         <Text style={styles.productTitle} numberOfLines={2}>{name}</Text>
         {brand ? <Text style={styles.brand}>{brand}</Text> : null}
-        <TouchableOpacity style={{ backgroundColor: '#e8f5e9', borderRadius: 8, padding: 10, marginTop: 10 }} onPress={onAddToCart}>
-          <Icon name={isInCart ? 'cart' : 'cart-outline'} size={22} color="#2e7d32" />
+        <TouchableOpacity
+          style={{ backgroundColor: cartAdded ? '#2e7d32' : '#e8f5e9', borderRadius: 8, padding: 10, marginTop: 10 }}
+          onPress={onAddToCart}
+        >
+          <Icon name="cart-outline" size={22} color={cartAdded ? '#fff' : '#2e7d32'} />
         </TouchableOpacity>
       </View>
     );
@@ -85,8 +88,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         ))}
         <Text style={styles.ratingText}>({rating})</Text>
       </View>
-      <TouchableOpacity style={styles.cartBtn} onPress={onAddToCart}>
-        <Icon name={isInCart ? 'cart' : 'cart-outline'} size={20} color="#2e7d32" />
+      <TouchableOpacity
+        style={[styles.cartBtn, cartAdded && { backgroundColor: '#2e7d32' }]}
+        onPress={onAddToCart}
+      >
+        <Icon name="cart-outline" size={20} color={cartAdded ? '#fff' : '#2e7d32'} />
       </TouchableOpacity>
     </View>
   );
@@ -234,4 +240,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProductCard; 
+export default ProductCard;

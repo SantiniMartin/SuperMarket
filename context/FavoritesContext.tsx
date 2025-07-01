@@ -6,6 +6,15 @@ import React, {
   ReactNode,
 } from "react";
 import { Product } from "@/services/productsService";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { Product } from "@/services/productsService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface FavoritesContextType {
   favorites: Product[];
@@ -20,6 +29,18 @@ const FavoritesContext = createContext<FavoritesContextType | undefined>(
 
 export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
   const [favorites, setFavorites] = useState<Product[]>([]);
+
+  // Cargar favoritos al iniciar
+  useEffect(() => {
+    AsyncStorage.getItem("favorites").then((data) => {
+      if (data) setFavorites(JSON.parse(data));
+    });
+  }, []);
+
+  // Guardar favoritos cada vez que cambian
+  useEffect(() => {
+    AsyncStorage.setItem("favorites", JSON.stringify(favorites));
+  }, [favorites]);
 
   const addFavorite = (product: Product) => {
     if (!favorites.find((f) => f.id === product.id)) {

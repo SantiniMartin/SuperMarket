@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, SafeAreaView, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { usePurchaseHistory } from '@/context/PurchaseHistoryContext';
+import { usePurchaseHistory, formatPurchaseDate } from '@/context/PurchaseHistoryContext';
 
 interface CartItem {
   product: any;
@@ -17,13 +17,13 @@ interface Purchase {
 }
 
 const PurchaseHistoryScreen = () => {
-  const { purchaseHistory } = usePurchaseHistory();
+  const { purchaseHistory, clearHistory } = usePurchaseHistory();
   const router = useRouter();
 
   const renderPurchase = ({ item }: { item: Purchase }) => (
     <View style={styles.purchaseContainer}>
       <View style={styles.purchaseHeader}>
-        <Text style={styles.purchaseDate}>{new Date(item.date).toLocaleDateString()}</Text>
+        <Text style={styles.purchaseDate}>{formatPurchaseDate(new Date(item.date))}</Text>
         <Text style={styles.purchaseTotal}>Total: ${item.total.toFixed(2)}</Text>
       </View>
       <FlatList
@@ -50,7 +50,21 @@ const PurchaseHistoryScreen = () => {
           <Icon name="arrow-back" size={24} color="#222" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Historial de Compras</Text>
-        <View style={{ width: 24 }} />
+        <TouchableOpacity
+          onPress={() => {
+            Alert.alert(
+              'Borrar historial',
+              '¿Estás seguro de que deseas borrar todo el historial de compras?',
+              [
+                { text: 'Cancelar', style: 'cancel' },
+                { text: 'Borrar', style: 'destructive', onPress: clearHistory },
+              ]
+            );
+          }}
+          style={styles.deleteBtn}
+        >
+          <Icon name="trash" size={22} color="#d32f2f" />
+        </TouchableOpacity>
       </View>
       <FlatList
         data={purchaseHistory.sort((a, b) => b.date.getTime() - a.date.getTime())}
@@ -88,6 +102,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#222',
+  },
+  deleteBtn: {
+    padding: 4,
+    marginLeft: 8,
   },
   listContainer: {
     padding: 16,
