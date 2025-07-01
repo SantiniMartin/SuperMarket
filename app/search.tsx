@@ -69,7 +69,7 @@ export default function SearchScreen() {
   const [sortOption, setSortOption] = useState('');
   const router = useRouter();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
-  const { addToCart, isInCart } = useCart();
+  const { addToCartInAllSupermarkets, cart } = useCart();
 
   // Animación de pop para el corazón
   const scaleAnim = useRef<{ [key: number]: Animated.Value }>({}).current;
@@ -143,24 +143,32 @@ export default function SearchScreen() {
     setFiltered(filteredList);
   }, [search, products, selectedCategory, sortOption]);
 
-  const renderProduct = ({ item }: { item: Product }) => (
-    <ProductCard
-      name={item.title}
-      image={getProductImageSource(item.thumbnail)}
-      categories={[]}
-      price={item.price}
-      brand={item.brand}
-      isFavorite={isFavorite(item.id)}
-      onToggleFavorite={() => handleFavorite(item)}
-      onAddToCart={() => addToCart(item)}
-      rating={item.rating || 0}
-      onRate={() => {}}
-      discountPercent={item.discountPercentage}
-      oldPrice={item.price / (1 - (item.discountPercentage || 0) / 100)}
-      isInCart={isInCart(item.id)}
-      compact={true}
-    />
-  );
+  // Helper para saber si el producto está en el carrito (por nombre y marca)
+  function isInCartByNameBrand(name: string, brand: string) {
+    return Object.values(cart).some(items => items.some(item => item.product.name === name && item.product.brand === brand));
+  }
+
+  const renderProduct = ({ item }: { item: Product }) => {
+    const added = isInCartByNameBrand(item.title, item.brand);
+    return (
+      <ProductCard
+        name={item.title}
+        image={getProductImageSource(item.thumbnail)}
+        categories={[]}
+        price={0}
+        brand={item.brand}
+        isFavorite={false}
+        onToggleFavorite={() => {}}
+        onAddToCart={() => addToCartInAllSupermarkets(item.title, item.brand, 1)}
+        rating={0}
+        onRate={() => {}}
+        discountPercent={0}
+        oldPrice={0}
+        compact={true}
+        cartAdded={added}
+      />
+    );
+  };
 
   return (
     <>
@@ -461,4 +469,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textDecorationLine: 'underline',
   },
-}); 
+});

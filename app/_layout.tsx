@@ -9,8 +9,8 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { FavoritesProvider } from '@/context/FavoritesContext';
 import { CartProvider } from '@/context/CartContext';
-import { PurchaseHistoryProvider } from '@/context/PurchaseHistoryContext';
 import { ThemeProviderCustom, useThemeCustom } from '@/context/ThemeContext';
+import { PaymentProvider } from '@/context/PaymentContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -60,14 +60,14 @@ function ThemedRoot() {
     <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
       <AuthProvider>
         <FavoritesProvider>
-          <CartProvider>
-            <PurchaseHistoryProvider>
+          <PaymentProvider>
+            <CartProvider>
               <RootLayoutNav />
-            </PurchaseHistoryProvider>
-          </CartProvider>
+              <StatusBar style="auto"/>
+            </CartProvider>
+          </PaymentProvider>
         </FavoritesProvider>
       </AuthProvider>
-      <StatusBar style="auto"/>
     </ThemeProvider>
   );
 }

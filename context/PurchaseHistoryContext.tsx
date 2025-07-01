@@ -17,6 +17,7 @@ interface Purchase {
 interface PurchaseHistoryContextType {
   purchaseHistory: Purchase[];
   addPurchase: (items: CartItem[], total: number) => void;
+  clearHistory: () => void;
 }
 
 const PurchaseHistoryContext = createContext<PurchaseHistoryContextType | undefined>(undefined);
@@ -58,8 +59,17 @@ export const PurchaseHistoryProvider = ({ children }: { children: ReactNode }) =
     }
   };
 
+  const clearHistory = async () => {
+    try {
+      setPurchaseHistory([]);
+      await AsyncStorage.removeItem('purchaseHistory');
+    } catch (error) {
+      console.error('Failed to clear purchase history.', error);
+    }
+  };
+
   return (
-    <PurchaseHistoryContext.Provider value={{ purchaseHistory, addPurchase }}>
+    <PurchaseHistoryContext.Provider value={{ purchaseHistory, addPurchase, clearHistory }}>
       {children}
     </PurchaseHistoryContext.Provider>
   );
@@ -72,3 +82,8 @@ export const usePurchaseHistory = () => {
   }
   return context;
 };
+
+// Helper para formatear fecha y hora
+export function formatPurchaseDate(date: Date) {
+  return date.toLocaleDateString();
+}
