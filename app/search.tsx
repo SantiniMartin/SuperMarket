@@ -6,6 +6,55 @@ import { Product } from '@/services/productsService';
 import { Stack, useRouter } from 'expo-router';
 import { useFavorites } from '@/context/FavoritesContext';
 import ProductCard from '../components/ui/ProductCard';
+import productosData from '../productos_supermercados_actualizado.json';
+
+const productImages: { [key: string]: any } = {
+  'zanahorias.jpg': require('../assets/images/products/zanahorias.jpg'),
+  'harina cañuelas.jpg': require('../assets/images/products/harina cañuelas.jpg'),
+  'arroz gallo.png': require('../assets/images/products/arroz gallo.png'),
+  'café la morenita.jpg': require('../assets/images/products/café la morenita.jpg'),
+  'aceite cocinero.jpg': require('../assets/images/products/aceite cocinero.jpg'),
+  'atun la campagnola.webp': require('../assets/images/products/atun la campagnola.webp'),
+  'cerveza quilmes.jpg': require('../assets/images/products/cerveza quilmes.jpg'),
+  'lavandina con ayudin.jpg': require('../assets/images/products/lavandina con ayudin.jpg'),
+  'banana.jpg': require('../assets/images/products/banana.jpg'),
+  'shampoo sedal.webp': require('../assets/images/products/shampoo sedal.webp'),
+  'galletita bagley.webp': require('../assets/images/products/galletita bagley.webp'),
+  'manzana.jpg': require('../assets/images/products/manzana.jpg'),
+  'cebolla.jpg': require('../assets/images/products/cebolla.jpg'),
+  'arveja arcor.jpeg': require('../assets/images/products/arveja arcor.jpeg'),
+  'gaseosa coca cola.jpg': require('../assets/images/products/gaseosa coca cola.jpg'),
+  'detergente ala.jpg': require('../assets/images/products/detergente ala.jpg'),
+  'fideo spaghetti.jpg': require('../assets/images/products/fideo spaghetti.jpg'),
+  'queso cremoso.jpg': require('../assets/images/products/queso cremoso.jpg'),
+  'desodorante.webp': require('../assets/images/products/desodorante.webp'),
+  'agua mineral.jpg': require('../assets/images/products/agua mineral.jpg'),
+  'manteca sancor.jpeg': require('../assets/images/products/manteca sancor.jpeg'),
+  'lentejas.png': require('../assets/images/products/lentejas.png'),
+  'sal dos anclas.webp': require('../assets/images/products/sal dos anclas.webp'),
+  'jugo en polvo.jpeg': require('../assets/images/products/jugo en polvo.jpeg'),
+  'papel higienico.jpg': require('../assets/images/products/papel higienico.jpg'),
+  'pechuga de polloo.png': require('../assets/images/products/pechuga de polloo.png'),
+  'carne.jpg': require('../assets/images/products/carne.jpg'),
+  'pan bimbo.webp': require('../assets/images/products/pan bimbo.webp'),
+  'pure de tomate.jpg': require('../assets/images/products/pure de tomate.jpg'),
+  'toallas femeninas.webp': require('../assets/images/products/toallas femeninas.webp'),
+  'cacao nesquik.jpg': require('../assets/images/products/cacao nesquik.jpg'),
+  'jabon de tocador.jpg': require('../assets/images/products/jabon de tocador.jpg'),
+  'choclo en lata.jpg': require('../assets/images/products/choclo en lata.jpg'),
+  'leche sancor.jpg': require('../assets/images/products/leche sancor.jpg'),
+  'azucar ledesma.jpg': require('../assets/images/products/azucar ledesma.jpg'),
+  'mayonesa.webp': require('../assets/images/products/mayonesa.webp'),
+  'pañales.webp': require('../assets/images/products/pañales.webp'),
+  'yerba taragui.webp': require('../assets/images/products/yerba taragui.webp'),
+  'mermelada.webp': require('../assets/images/products/mermelada.webp'),
+};
+
+function getProductImageSource(image_url: string) {
+  if (!image_url) return require('../assets/images/products/placeholder.png');
+  if (image_url.startsWith('http')) return { uri: image_url };
+  return productImages[image_url] || require('../assets/images/products/placeholder.png');
+}
 
 export default function SearchScreen() {
   const [search, setSearch] = useState('');
@@ -41,18 +90,35 @@ export default function SearchScreen() {
   };
 
   useEffect(() => {
-    async function loadData() {
-      setLoading(true);
-      const [prods, cats] = await Promise.all([
-        fetchProducts(),
-        fetchCategories()
-      ]);
-      setProducts(prods);
-      setFiltered(prods);
-      setCategories(['Todos los productos', ...cats]);
-      setLoading(false);
-    }
-    loadData();
+    // Obtener todos los productos de todos los supermercados y adaptarlos al tipo Product
+    let idCounter = 1;
+    const allProducts = productosData.supermarkets.flatMap((s) => s.products.map((p) => ({
+      id: typeof p.id === 'number' ? p.id : Number(p.id.toString().replace(/\D/g, '')) || idCounter++,
+      title: p.name,
+      price: 0, // No se usa
+      description: '', // No se usa
+      category: p.category,
+      thumbnail: p.image_url ? (p.image_url.startsWith('http') ? p.image_url : p.image_url) : '',
+      images: [],
+      rating: 0,
+      stock: p.stock,
+      brand: p.brand,
+      discountPercentage: 0,
+    })));
+    // Filtrar productos únicos por nombre y marca
+    const uniqueMap = new Map();
+    allProducts.forEach((p) => {
+      const key = `${p.title.toLowerCase()}|${(p.brand || '').toLowerCase()}`;
+      if (!uniqueMap.has(key)) {
+        uniqueMap.set(key, p);
+      }
+    });
+    const uniqueProducts = Array.from(uniqueMap.values());
+    setProducts(uniqueProducts);
+    setFiltered(uniqueProducts);
+    // Extraer categorías únicas
+    setCategories(['Todos los productos', ...Array.from(new Set(uniqueProducts.map(p => p.category)))]);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -79,17 +145,18 @@ export default function SearchScreen() {
   const renderProduct = ({ item }: { item: Product }) => (
     <ProductCard
       name={item.title}
-      image={{ uri: item.thumbnail }}
-      categories={[item.category]}
-      discountPercent={item.discountPercentage}
-      price={item.price}
-      oldPrice={item.price / (1 - (item.discountPercentage || 0) / 100)}
+      image={getProductImageSource(item.thumbnail)}
+      categories={[]}
+      price={0}
       brand={item.brand}
-      isFavorite={isFavorite(item.id)}
-      onToggleFavorite={() => handleFavorite(item)}
+      isFavorite={false}
+      onToggleFavorite={() => {}}
       onAddToCart={() => {}}
-      rating={ratings[item.id] || 0}
-      onRate={(r) => setRatings({...ratings, [item.id]: r})}
+      rating={0}
+      onRate={() => {}}
+      discountPercent={0}
+      oldPrice={0}
+      compact={true}
     />
   );
 

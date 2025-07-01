@@ -15,6 +15,7 @@ interface ProductCardProps {
   onAddToCart: () => void;
   rating: number;
   onRate: (rating: number) => void;
+  compact?: boolean;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -30,7 +31,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onAddToCart,
   rating,
   onRate,
+  compact = false,
 }) => {
+  if (compact) {
+    return (
+      <View style={[styles.card, { minWidth: 160, maxWidth: 190, width: '90%', alignSelf: 'center', padding: 18, height: 270, justifyContent: 'space-between' }]}> 
+        <View style={styles.imageBox}>
+          <Image source={image} style={styles.image} />
+        </View>
+        <Text style={styles.productTitle} numberOfLines={2}>{name}</Text>
+        {brand ? <Text style={styles.brand}>{brand}</Text> : null}
+        <TouchableOpacity style={{ backgroundColor: '#e8f5e9', borderRadius: 8, padding: 10, marginTop: 10 }} onPress={onAddToCart}>
+          <Icon name="cart-outline" size={22} color="#2e7d32" />
+        </TouchableOpacity>
+      </View>
+    );
+  }
   return (
     <View style={styles.card}>
       <View style={styles.topRow}>

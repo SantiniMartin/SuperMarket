@@ -50,6 +50,7 @@ const productImages: { [key: string]: any } = {
   'jugo en polvo.jpeg': require('../../assets/images/products/jugo en polvo.jpeg'),
   'choclo en lata.jpg': require('../../assets/images/products/choclo en lata.jpg'),
   'jabon de tocador.jpg': require('../../assets/images/products/jabon de tocador.jpg'),
+  'tomate redondo.jpg': require('../../assets/images/products/tomate redondo.jpg'),
 };
 
 function getProductImageSource(image_url: string, category_image_url: string) {
