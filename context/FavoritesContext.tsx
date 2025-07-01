@@ -1,10 +1,3 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
 import { Product } from "@/services/productsService";
 import React, {
   createContext,
@@ -13,7 +6,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { Product } from "@/services/productsService";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface FavoritesContextType {
