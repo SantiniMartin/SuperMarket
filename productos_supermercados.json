@@ -28,7 +28,7 @@
           "discount_percent": 0,
           "category": "Panadería",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/2880/2880310.png",
-          "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Harina_de_trigo.jpg",
+          "image_url": "assets/images/products/aceite cocinero.jpg",
           "brand": "Molinos Cañuelas"
         },
         {
@@ -453,7 +453,8 @@
           "has_offer": false,
           "discount_percent": 0,
           "category": "Lácteos",
-          "category_image_url": "https://cdn-icons-png.flaticon.com/512/1998/1998592.png"
+          "category_image_url": "https://cdn-icons-png.flaticon.com/512/1998/1998592.png",
+          "image_url": "../../assets/images/products/mermelada.webp"
         }
       ]
     },
@@ -592,7 +593,7 @@
           "has_offer": true,
           "discount_percent": 27,
           "category": "Higiene",
-          "category_image_url": "https://cdn-icons-png.flaticon.com/512/1905/1905083.png"
+          "category_image_url": "../../assets/images/products/mermelada.jpg"
         },
         {
           "id": "libertad-0013",
@@ -790,6 +791,7 @@
           "has_offer": true,
           "discount_percent": 5,
           "category": "Lácteos",
+          "image_url": "../../assets/images/products/manzana.jpg",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/1998/1998592.png"
         },
         {

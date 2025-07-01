@@ -4,6 +4,7 @@
       "id": "coto",
       "name": "Coto",
       "logo_url": "https://example.com/logos/coto.png",
+      "BASE_PATH": "../assets/images/products/",
       "products": [
         {
           "id": "coto-0001",
@@ -3045,7 +3046,7 @@
         },
         {
           "id": "vea-0032",
-          "name": "Manteca 200g", 
+          "name": "Manteca 200g",
           "price": 267.37,
           "currency": "ARS",
           "stock": 81,
@@ -4027,7 +4028,7 @@
           "stock": 65,
           "has_offer": false,
           "discount_percent": 0,
-          "category": "Higiene" ,
+          "category": "Higiene",
           "category_image_url": "https://cdn-icons-png.flaticon.com/512/1905/1905083.png",
           "image_url": "jabon de tocador.jpg",
           "brand": "Elite"

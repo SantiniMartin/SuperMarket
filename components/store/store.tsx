@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { SearchBar } from "react-native-elements";
-
-import React from "react";
+import React, { useState } from "react";
+import { Card, Button, Icon } from "@rneui/themed";
 import {
   View,
   Text,
@@ -9,51 +9,71 @@ import {
   Image,
   ScrollView,
   SafeAreaView,
+  FlatList,
+  TextInput,
 } from "react-native";
-import { Card, Button, Icon } from "@rneui/themed";
 
-const users = [
-  {
-    name: "brynn",
+// const lista = [
+//   {
+//     name: "Carne",
 
-    avatar: require("../../assets/images/products/carne.jpg"),
-  },
-  {
-    name: "andy vitale",
-    avatar: require("../../assets/images/products/cebolla.jpg"),
-  },
-  {
-    name: "katy friedson",
-    avatar: require("../../assets/images/products/banana.jpg"),
-  },
-];
+//     avatar: require("../../assets/images/products/carne.jpg"),
+//   },
+//   {
+//     name: "Cebolla",
+//     avatar: require("../../assets/images/products/cebolla.jpg"),
+//   },
+//   {
+//     name: "banana",
+//     avatar: require("../../assets/images/products/banana.jpg"),
+//   },
+// ];
+
+const lista = require("../../productos_supermercados.json").supermarkets[0]
+  .products;
 
 const Store = () => {
+  const [texto, setTexto] = useState("");
+  //const [resultados, setResultados] = useState(lista);
+
+  const buscar = (valor) => {
+    setTexto(valor);
+
+    //const filtrados = lista.filter((item) =>
+    // item.name.toLowerCase().includes(valor.toLowerCase())
+  };
+  //setResultados(filtrados);
+  const productosFiltrados = lista.filter((item) =>
+    item.name.toLowerCase().includes(texto.toLowerCase())
+  );
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
         <View style={styles.view}>
           <Text style={styles.text}>TIENDA</Text>
           <SearchBar
+            value={texto}
+            onChangeText={buscar}
             platform="default"
-            placeholder="Search Here..."
+            placeholder="Buscar..."
             lightTheme={true}
             round={true}
           />
+
           <SafeAreaView style={styles.container}></SafeAreaView>
           <StatusBar style="auto" />
           <Card>
             <Card.Title>Productos</Card.Title>
             <Card.Divider />
-            {users.map((i, a) => {
+            {productosFiltrados.map((i, a) => {
               return (
                 <View key={a}>
                   <Image
                     style={styles.image}
                     resizeMode="cover"
-                    source={i.avatar}
+                    source={i.image_url}
                   />
-                  <Text>{i.name}</Text>
+                  <Text style={styles.Text}>{i.name}</Text>
                   <Button
                     icon={
                       <Icon
@@ -69,6 +89,9 @@ const Store = () => {
                       marginBottom: 0,
                     }}
                     title="VIEW NOW"
+                    onPress={() => {
+                      console.log("Button pressed for product:", i.name);
+                    }}
                   />
                 </View>
               );
@@ -102,6 +125,12 @@ const styles = StyleSheet.create({
   },
   statusbar: {
     paddingTop: 30,
+  },
+  Text: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "black",
+    textAlign: "center",
   },
 });
 
