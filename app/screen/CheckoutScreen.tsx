@@ -8,18 +8,22 @@ import {
   ScrollView,
   Alert,
   Image,
-  FlatList
+  FlatList,
+  Modal
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { useCart } from '@/context/CartContext';
+import { usePurchaseHistory } from '@/context/PurchaseHistoryContext';
 
 type PaymentMethod = 'credit' | 'debit' | null;
 
 export default function CheckoutScreen() {
   const router = useRouter();
   const { cartItems, getTotalPrice, getTotalItems, clearCart } = useCart();
+  const { addPurchase } = usePurchaseHistory();
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>(null);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const handleConfirmPurchase = () => {
     if (!selectedPayment) {
@@ -27,31 +31,7 @@ export default function CheckoutScreen() {
       return;
     }
 
-    Alert.alert(
-      'Confirmar compra',
-      `Total: $${getTotalPrice().toFixed(2)}\nMétodo: ${selectedPayment === 'credit' ? 'Tarjeta de Crédito' : 'Tarjeta de Débito'}`,
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Confirmar',
-          onPress: () => {
-            Alert.alert(
-              '¡Compra exitosa!',
-              'Tu pedido ha sido procesado correctamente',
-              [
-                {
-                  text: 'OK',
-                  onPress: () => {
-                    clearCart();
-                    router.back();
-                  }
-                }
-              ]
-            );
-          }
-        }
-      ]
-    );
+    setModalVisible(true);
   };
 
   const renderCartItem = ({ item }: { item: any }) => (
@@ -100,25 +80,25 @@ export default function CheckoutScreen() {
         {/* Métodos de pago */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Método de pago</Text>
-          
           <TouchableOpacity
             style={[
               styles.paymentOption,
-              selectedPayment === 'credit' && styles.paymentOptionSelected
+              selectedPayment === 'credit' && styles.paymentOptionSelected,
             ]}
-            onPress={() => setSelectedPayment('credit')}
-          >
+            onPress={() => setSelectedPayment('credit')}>
             <View style={styles.paymentOptionContent}>
-              <Icon 
-                name="card-outline" 
-                size={24} 
-                color={selectedPayment === 'credit' ? '#2e7d32' : '#666'} 
+              <Icon
+                name="card-outline"
+                size={24}
+                color={selectedPayment === 'credit' ? '#2e7d32' : '#666'}
               />
               <View style={styles.paymentOptionText}>
-                <Text style={[
-                  styles.paymentOptionTitle,
-                  selectedPayment === 'credit' && styles.paymentOptionTitleSelected
-                ]}>
+                <Text
+                  style={[
+                    styles.paymentOptionTitle,
+                    selectedPayment === 'credit' &&
+                      styles.paymentOptionTitleSelected,
+                  ]}>
                   Tarjeta de Crédito
                 </Text>
                 <Text style={styles.paymentOptionSubtitle}>
@@ -130,25 +110,25 @@ export default function CheckoutScreen() {
               <Icon name="checkmark-circle" size={24} color="#2e7d32" />
             )}
           </TouchableOpacity>
-
           <TouchableOpacity
             style={[
               styles.paymentOption,
-              selectedPayment === 'debit' && styles.paymentOptionSelected
+              selectedPayment === 'debit' && styles.paymentOptionSelected,
             ]}
-            onPress={() => setSelectedPayment('debit')}
-          >
+            onPress={() => setSelectedPayment('debit')}>
             <View style={styles.paymentOptionContent}>
-              <Icon 
-                name="card-outline" 
-                size={24} 
-                color={selectedPayment === 'debit' ? '#2e7d32' : '#666'} 
+              <Icon
+                name="card-outline"
+                size={24}
+                color={selectedPayment === 'debit' ? '#2e7d32' : '#666'}
               />
               <View style={styles.paymentOptionText}>
-                <Text style={[
-                  styles.paymentOptionTitle,
-                  selectedPayment === 'debit' && styles.paymentOptionTitleSelected
-                ]}>
+                <Text
+                  style={[
+                    styles.paymentOptionTitle,
+                    selectedPayment === 'debit' &&
+                      styles.paymentOptionTitleSelected,
+                  ]}>
                   Tarjeta de Débito
                 </Text>
                 <Text style={styles.paymentOptionSubtitle}>
@@ -211,6 +191,35 @@ export default function CheckoutScreen() {
           </Text>
         </TouchableOpacity>
       </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => {
+          setModalVisible(!isModalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Icon name="checkmark-circle" size={60} color="#2e7d32" />
+            <Text style={styles.modalText}>¡Compra Exitosa!</Text>
+            <Text style={styles.modalSubText}>Tu pedido ha sido procesado.</Text>
+            <TouchableOpacity
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => {
+                addPurchase(cartItems, getTotalPrice());
+                setModalVisible(!isModalVisible);
+                clearCart();
+                router.push('/');
+              }}
+            >
+              <Text style={styles.textStyle}>Aceptar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
     </SafeAreaView>
   );
 }
@@ -412,5 +421,54 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 8,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2,
+    marginTop: 15,
+    width: 100,
+    alignItems: 'center',
+  },
+  buttonClose: {
+    backgroundColor: '#2e7d32',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
+  modalText: {
+    marginBottom: 10,
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  modalSubText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#666',
   },
 }); 

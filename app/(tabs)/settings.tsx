@@ -6,8 +6,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemeCustom } from '@/context/ThemeContext';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 
 export default function SettingsScreen() {
+  const router = useRouter();
   const { logout, user, updateProfile } = useAuth();
   const { favorites } = useFavorites();
   const { theme, setTheme } = useThemeCustom();
@@ -155,9 +157,9 @@ export default function SettingsScreen() {
       </View>
       {/* Opciones */}
       <View style={styles.menuBox}>
-        <MenuItem icon="notifications-outline" label="Notificaciones" />
+        <MenuItem icon="notifications-outline" label="Notificaciones" onPress={() => router.push('/notifications')} />
         <MenuItem icon="card-outline" label="Métodos de pagos" />
-        <MenuItem icon="receipt-outline" label="Historial de compras" />
+        <MenuItem icon="receipt-outline" label="Historial de compras" onPress={() => router.push('/history')} />
         <MenuItem icon="star-outline" label="Tiendas favoritas" />
         <View style={styles.menuItem}>
           <Icon name="color-palette-outline" size={22} color="#555" style={{ marginRight: 16 }} />
@@ -189,11 +191,12 @@ export default function SettingsScreen() {
   );
 }
 
-function MenuItem({ icon, label }: { icon: string; label: string }) {
+function MenuItem({ icon, label, onPress }: { icon: string; label: string; onPress?: () => void }) {
   return (
-    <TouchableOpacity style={styles.menuItem}>
+    <TouchableOpacity style={styles.menuItem} onPress={onPress} disabled={!onPress}>
       <Icon name={icon} size={22} color="#555" style={{ marginRight: 16 }} />
       <Text style={styles.menuLabel}>{label}</Text>
+      {onPress && <Icon name="chevron-forward-outline" size={20} color="#aaa" />}
     </TouchableOpacity>
   );
 }

@@ -9,6 +9,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import { FavoritesProvider } from '@/context/FavoritesContext';
 import { CartProvider } from '@/context/CartContext';
+import { PurchaseHistoryProvider } from '@/context/PurchaseHistoryContext';
 import { ThemeProviderCustom, useThemeCustom } from '@/context/ThemeContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -60,11 +61,13 @@ function ThemedRoot() {
       <AuthProvider>
         <FavoritesProvider>
           <CartProvider>
-            <RootLayoutNav />
-            <StatusBar style="auto"/>
+            <PurchaseHistoryProvider>
+              <RootLayoutNav />
+            </PurchaseHistoryProvider>
           </CartProvider>
         </FavoritesProvider>
       </AuthProvider>
+      <StatusBar style="auto"/>
     </ThemeProvider>
   );
 }

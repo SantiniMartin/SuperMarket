@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useFavorites } from '@/context/FavoritesContext';
+import { useCart } from '@/context/CartContext';
 import ProductCard from '../../components/ui/ProductCard';
 
 const productImages: { [key: string]: any } = {
@@ -59,6 +60,7 @@ function getProductImageSource(image_url: string, category_image_url: string) {
 export default function FavoritesScreen() {
   const [tab, setTab] = React.useState<'favoritos' | 'lista'>('favoritos');
   const { favorites, removeFavorite, addFavorite } = useFavorites();
+  const { addToCart, isInCart } = useCart();
   const [ratings, setRatings] = React.useState<{[id: string]: number}>({});
 
   const renderFavorite = ({ item }: { item: any }) => (
@@ -72,7 +74,8 @@ export default function FavoritesScreen() {
       brand={item.brand}
       isFavorite={true}
       onToggleFavorite={() => removeFavorite(item.id)}
-      onAddToCart={() => {}}
+      onAddToCart={() => addToCart(item)}
+      isInCart={isInCart(item.id)}
       rating={ratings[item.id] || 0}
       onRate={(r) => setRatings({...ratings, [item.id]: r})}
     />

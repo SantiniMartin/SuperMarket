@@ -34,6 +34,8 @@ export default function TabLayout() {
               return <Icon name="cart-outline" size={size} color={color} />;
             case 'favorites':
               return <Icon name="heart-outline" size={size} color={color} />;
+            case 'history':
+              return <Icon name="receipt-outline" size={size} color={color} />;
             case 'settings':
               return <Icon name="settings-outline" size={size} color={color} />;
             default:
@@ -46,6 +48,8 @@ export default function TabLayout() {
       <Tabs.Screen name="stores" options={{ title: 'Tiendas' }} />
       <Tabs.Screen name="cart" options={{ title: 'Carrito' }} />
       <Tabs.Screen name="favorites" options={{ title: 'Favoritos' }} />
+      <Tabs.Screen name="history" options={{ title: 'Historial', href: null }} />
+      <Tabs.Screen name="notifications" options={{ title: 'Notificaciones', href: null }} />
       <Tabs.Screen name="settings" options={{ title: 'Ajustes' }} />
     </Tabs>
   );

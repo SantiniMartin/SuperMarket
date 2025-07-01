@@ -67,6 +67,7 @@ const WeeklyOffers = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const { addToCart, isInCart } = useCart();
   const [ratings, setRatings] = useState<{[id: string]: number}>({});
 
   useEffect(() => {
@@ -98,17 +99,45 @@ const WeeklyOffers = () => {
         renderItem={({ item }: { item: any }) => (
           <ProductCard
             name={item.name}
-            image={getProductImageSource(item.image_url, item['category_image_url'] ?? '')}
-            categories={[item.category]}
-            discountPercent={item.discount_percent}
+            image={getProductImageSource(item.image_url, item.category_image_url)}
+            categories={[item.category_name]}
+            discountPercent={item.discount_percentage}
             price={item.price}
-            oldPrice={item.price / (1 - (item.discount_percent || 0) / 100)}
-            brand={item.brand}
+            oldPrice={item.old_price}
+            brand={item.brand_name}
             isFavorite={isFavorite(item.id)}
-            onToggleFavorite={() => isFavorite(item.id) ? removeFavorite(item.id) : addFavorite(item)}
-            onAddToCart={() => {}}
-            rating={ratings[item.id] || 0}
-            onRate={(r) => setRatings({...ratings, [item.id]: r})}
+            onToggleFavorite={() => {
+              const productToToggle: Product = {
+                id: item.id,
+                title: item.name,
+                price: item.price,
+                description: item.description || '',
+                category: item.category_name,
+                thumbnail: item.image_url,
+                brand: item.brand_name,
+              };
+              if (isFavorite(item.id)) {
+                removeFavorite(item.id);
+              } else {
+                addFavorite(productToToggle);
+              }
+            }}
+            onAddToCart={() => {
+              const productToAdd: Product = {
+                id: item.id,
+                title: item.name,
+                price: item.price,
+                description: item.description || '',
+                category: item.category_name,
+                thumbnail: item.image_url,
+                brand: item.brand_name,
+              };
+              addToCart(productToAdd);
+            }}
+            rating={ratings[item.id] || item.rating || 0}
+            onRate={(newRating) => setRatings(prev => ({...prev, [item.id]: newRating}))}
+            isInCart={isInCart(item.id)}
+            compact={false}
           />
         )}
       />
@@ -121,6 +150,7 @@ export const DailyOffers = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const { addToCart, isInCart } = useCart();
   const [ratings, setRatings] = useState<{[id: string]: number}>({});
 
   useEffect(() => {
@@ -160,9 +190,10 @@ export const DailyOffers = () => {
             brand={item.brand}
             isFavorite={isFavorite(item.id)}
             onToggleFavorite={() => isFavorite(item.id) ? removeFavorite(item.id) : addFavorite(item)}
-            onAddToCart={() => {}}
+            onAddToCart={() => addToCart(item)}
             rating={ratings[item.id] || 0}
             onRate={(r) => setRatings({...ratings, [item.id]: r})}
+            isInCart={isInCart(item.id)}
           />
         )}
       />

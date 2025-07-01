@@ -5,6 +5,7 @@ import { fetchProducts, fetchCategories } from '@/services/api';
 import { Product } from '@/services/productsService';
 import { Stack, useRouter } from 'expo-router';
 import { useFavorites } from '@/context/FavoritesContext';
+import { useCart } from '@/context/CartContext';
 import ProductCard from '../components/ui/ProductCard';
 import productosData from '../productos_supermercados_actualizado.json';
 
@@ -68,6 +69,7 @@ export default function SearchScreen() {
   const [sortOption, setSortOption] = useState('');
   const router = useRouter();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+  const { addToCart, isInCart } = useCart();
 
   // Animación de pop para el corazón
   const scaleAnim = useRef<{ [key: number]: Animated.Value }>({}).current;
@@ -146,15 +148,16 @@ export default function SearchScreen() {
       name={item.title}
       image={getProductImageSource(item.thumbnail)}
       categories={[]}
-      price={0}
+      price={item.price}
       brand={item.brand}
-      isFavorite={false}
-      onToggleFavorite={() => {}}
-      onAddToCart={() => {}}
-      rating={0}
+      isFavorite={isFavorite(item.id)}
+      onToggleFavorite={() => handleFavorite(item)}
+      onAddToCart={() => addToCart(item)}
+      rating={item.rating || 0}
       onRate={() => {}}
-      discountPercent={0}
-      oldPrice={0}
+      discountPercent={item.discountPercentage}
+      oldPrice={item.price / (1 - (item.discountPercentage || 0) / 100)}
+      isInCart={isInCart(item.id)}
       compact={true}
     />
   );
