@@ -68,7 +68,6 @@ export default function SearchScreen() {
   const [sortOption, setSortOption] = useState('');
   const router = useRouter();
   const { addFavorite, removeFavorite, isFavorite } = useFavorites();
-  const { addToCart, removeFromCart, isInCart } = useCart();
 
   // Animación de pop para el corazón
   const scaleAnim = useRef<{ [key: number]: Animated.Value }>({}).current;
